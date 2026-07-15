@@ -14,7 +14,7 @@ Soundvera e o platformă educațională despre sunet. Ideea de la care am pornit
 ## Cum se folosește
 Platforma e găzduită online, nu trebuie instalat nimic. Deschizi linkul, îți faci cont din pagina *Register* și gata.
 
-## Cum e făcut
+## Cum e făcută
 Proiectul e scris în HTML, CSS și JavaScript, fără niciun framework. Nu are server propriu — paginile vorbesc direct cu Firebase (pentru conturi și baza de date) și cu EmailJS (pentru formularul de contact). Am ales varianta asta pentru că e simplă, ușor de găzduit și se potrivește cu ce voiam: o platformă pe care oricine o poate deschide direct din browser.
 
 
