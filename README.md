@@ -6,9 +6,9 @@ Soundvera e o platformă web educațională despre sunet. Ideea de la care am po
 
 Am ales tema pentru că eu cânt la mai multe instrumente (chitară, fluier, caval) și mi-am dat seama de-a lungul timpului că sunetul pe care îl produc e, de fapt, și fizică, și matematică, și acustică — depinde doar din ce parte îl privești.
 
-**Autor:** Lupau Razvan, XI, Colegiul National "Samuil Vulcan", Beius
+**Autor:** Lupau Razvan, Clasa a-XI-a, Colegiul National "Samuil Vulcan", Beius
 **Coordonator:** Buran Claudia
-**Link aplicație:** [pune linkul aici]
+
 
 ## Ce poți face pe site
 
