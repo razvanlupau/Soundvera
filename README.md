@@ -3,7 +3,7 @@
 
 Soundvera e o platformă educațională despre sunet. Ideea de la care am pornit e că sunetul nu ține de o singură materie — aceeași undă sonoră e în același timp fizică, matematică, biologie, muzică și încă multe altele. Am vrut să arăt asta printr-un singur proiect care leagă 12 domenii diferite, toate pornind de la sunet.
 
-## Ce poți face pe platforma
+## Ce poți face pe platformă
 - Îți faci cont (cu email sau cu Google) și îți alegi un nume de utilizator.
 - Parcurgi cele **12 domenii** din secțiunea *Teorie* — fiecare cu explicații, exemple reale și fapte mai puțin știute.
 - Rezolvi **quiz-uri** pentru fiecare domeniu. Când greșești, îți arată răspunsul corect și de ce.
