@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera - Cont</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+
+<style>
+html { overflow-x: hidden; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+    background: #0f2d4a;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* fundal animat */
+.wave {
+    position: fixed;
+    width: 200%; height: 200%;
+    top: -50%; left: -50%;
+    background: radial-gradient(circle at 20% 20%, #2d6494 0%, #0f2d4a 65%);
+    animation: moveWave 12s infinite linear;
+    opacity: 0.75;
+    z-index: 0;
+}
+
+@keyframes moveWave {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(60px, 40px) scale(1.05); }
+    100% { transform: translate(0,0) scale(1); }
+}
+
+/* bule */
+.bubble {
+    position: fixed;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.25), rgba(0,198,255,0.05));
+    border: 1px solid rgba(0,198,255,0.25);
+    animation: floatUp linear infinite;
+    z-index: 1;
+}
+
+@keyframes floatUp {
+    0%   { transform: translateY(0) scale(1); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.6; }
+    100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+}
+
+.bubble:nth-child(1) { width: 18px; height: 18px; left: 5%; bottom: -20px; animation-duration: 8s; }
+.bubble:nth-child(2) { width: 10px; height: 10px; left: 12%; bottom: -20px; animation-duration: 6s; }
+.bubble:nth-child(3) { width: 22px; height: 22px; left: 20%; bottom: -20px; animation-duration: 10s; }
+.bubble:nth-child(4) { width: 14px; height: 14px; right: 8%; bottom: -20px; animation-duration: 7s; }
+.bubble:nth-child(5) { width: 20px; height: 20px; right: 18%; bottom: -20px; animation-duration: 9s; }
+.bubble:nth-child(6) { width: 10px; height: 10px; right: 5%; bottom: -20px; animation-duration: 5s; }
+
+/* note muzicale */
+.note {
+    position: fixed;
+    font-size: 28px;
+    animation: floatNote linear infinite;
+    z-index: 1;
+    opacity: 0;
+    color: rgba(0,198,255,0.7);
+    user-select: none;
+}
+
+@keyframes floatNote {
+    0%   { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+    10%  { opacity: 0.8; }
+    50%  { transform: translateY(-40vh) rotate(15deg) scale(1); opacity: 0.6; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(-90vh) rotate(-10deg) scale(0.9); opacity: 0; }
+}
+
+.note:nth-child(7)  { left: 7%;   bottom: 10%; animation-duration: 9s;  animation-delay: 0s;   font-size: 24px; }
+.note:nth-child(8)  { left: 18%;  bottom: 20%; animation-duration: 12s; animation-delay: 2s;   font-size: 32px; }
+.note:nth-child(9)  { left: 28%;  bottom: 5%;  animation-duration: 8s;  animation-delay: 4s;   font-size: 20px; }
+.note:nth-child(10) { right: 7%;  bottom: 15%; animation-duration: 10s; animation-delay: 1s;   font-size: 28px; }
+.note:nth-child(11) { right: 20%; bottom: 25%; animation-duration: 11s; animation-delay: 3s;   font-size: 22px; }
+.note:nth-child(12) { right: 30%; bottom: 8%;  animation-duration: 7s;  animation-delay: 5s;   font-size: 30px; }
+.note:nth-child(13) { left: 40%;  bottom: 3%;  animation-duration: 13s; animation-delay: 1.5s; font-size: 18px; }
+
+/* navbar */
+.navbar {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 105px;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+    z-index: 10;
+    border-bottom: 1px solid rgba(0,198,255,0.2);
+}
+
+/* logo */
+.logo {
+    position: absolute;
+    top: 5px; left: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logo img {
+    width: 120px; height: 120px;
+    object-fit: contain;
+    margin: -15px -10px -15px -10px;
+}
+
+.logo span { color: #0099cc; margin-top: 10px; }
+
+.nav-links {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.75);
+    padding: 8px 16px;
+    border-radius: 30px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: white;
+    background: rgba(0,198,255,0.15);
+}
+
+/* dropdown cont */
+.dropdown { position: relative; }
+
+.dropdown .cont {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,198,255,0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown .cont:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,198,255,0.5);
+}
+
+.nav-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.4);
+}
+
+.nav-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 110%; right: 0;
+    background: rgba(15,45,74,0.97);
+    border: 1.5px solid rgba(0,198,255,0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    min-width: 200px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.dropdown-menu.active { display: block; }
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.dropdown-avatar {
+    width: 35px; height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.dropdown-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+#dropUsername { font-size: 14px; font-weight: bold; color: white; }
+
+.dropdown-menu a {
+    display: block;
+    padding: 13px 18px;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+    background: none;
+}
+
+.dropdown-menu a:hover { background: rgba(0,198,255,0.15); color: white; }
+
+.dropdown-menu a.logout {
+    color: #ff6b6b;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.dropdown-menu a.logout:hover { background: rgba(255,80,80,0.15); }
+
+/* container card profil */
+.container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 105px;
+}
+
+/* card profil */
+.card {
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid rgba(0,198,255,0.25);
+    border-radius: 20px;
+    padding: 20px 22px;
+    width: 350px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(0,198,255,0.1);
+    animation: fadeIn 0.8s ease forwards;
+}
+
+/* avatar utilizator */
+.avatar-wrap {
+    position: relative;
+    width: 60px; height: 60px;
+    margin: 0 auto 12px;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 0 20px rgba(0,198,255,0.4);
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* overlay editare avatar */
+.avatar-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: 0.3s;
+    gap: 2px;
+}
+
+.avatar-wrap:hover .avatar-overlay { opacity: 1; }
+.avatar-overlay span { font-size: 16px; }
+.avatar-overlay p { font-size: 9px; color: white; }
+
+/* input file ascuns */
+input[type="file"] { display: none; }
+
+.card h2 { text-align: center; font-size: 18px; margin-bottom: 12px; }
+
+.info-row { display: flex; flex-direction: column; margin-bottom: 8px; }
+
+.info-row label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+}
+
+/* camp username editabil */
+.username-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.username-input {
+    width: 100%;
+    padding: 10px 45px 10px 18px;
+    border-radius: 30px;
+    border: 1.5px solid rgba(0,198,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.username-input:focus {
+    border-color: #00c6ff;
+    background: rgba(0,198,255,0.08);
+    box-shadow: 0 0 10px rgba(0,198,255,0.2);
+}
+
+.edit-btn {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    font-size: 15px;
+    user-select: none;
+}
+
+/* buton salvare username */
+.save-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 30px;
+    border: none;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+    display: none;
+}
+
+.save-btn:hover { transform: scale(1.02); }
+
+.value {
+    width: 100%;
+    padding: 10px 18px;
+    border-radius: 30px;
+    border: 1.5px solid rgba(0,198,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    font-size: 14px;
+}
+
+.divider-line { height: 1px; background: rgba(0,198,255,0.15); margin: 12px 0; }
+
+/* buton schimbare parola */
+.btn-change-pw {
+    width: 100%; padding: 11px;
+    border-radius: 30px;
+    border: 1.5px solid rgba(0,198,255,0.3);
+    background: rgba(0,198,255,0.1);
+    color: #00c6ff;
+    font-size: 14px; font-weight: bold;
+    cursor: pointer; transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.btn-change-pw:hover { background: rgba(0,198,255,0.2); transform: scale(1.02); }
+
+/* buton logout */
+.btn-logout {
+    width: 100%; padding: 11px;
+    border-radius: 30px;
+    border: 1.5px solid rgba(255,80,80,0.4);
+    background: rgba(255,80,80,0.1);
+    color: #ff6b6b;
+    font-size: 14px; font-weight: bold;
+    cursor: pointer; transition: all 0.3s ease;
+}
+
+.btn-logout:hover { background: rgba(255,80,80,0.2); transform: scale(1.02); }
+
+/* mesaje eroare / succes */
+.msg {
+    width: 100%; padding: 9px 14px;
+    border-radius: 10px; font-size: 12px;
+    text-align: center; margin-bottom: 10px;
+    display: none;
+}
+
+.msg.success {
+    background: rgba(0,255,150,0.1);
+    border: 1px solid rgba(0,255,150,0.3);
+    color: #00ff96; display: block;
+}
+
+.msg.error {
+    background: rgba(255,80,80,0.15);
+    border: 1px solid rgba(255,80,80,0.4);
+    color: #ff6b6b; display: block;
+}
+
+/* animatie intrare */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+    @media (max-width: 480px) {
+        /* logo */
+        .logo img { width: 70px !important; height: 70px !important; }
+        .logo { font-size: 15px !important; }
+        .logo span { margin-top: 5px !important; }
+
+        /* navbar */
+        .navbar { padding: 0 10px !important; height: 80px !important; }
+        .nav-links { gap: 4px !important; }
+        .nav-links a { padding: 6px 8px !important; font-size: 11px !important; }
+        .dropdown .cont { padding: 6px 10px !important; font-size: 11px !important; }
+
+        /* content */
+        .content-wrap { top: 80px !important; height: calc(100vh - 80px) !important; }
+        .page { padding: 20px 14px 60px !important; }
+
+        /* titluri */
+        h1, .page-title { font-size: 22px !important; }
+        h2 { font-size: 18px !important; }
+
+        body { overflow-y: auto; }
+    }
+
+    @media (max-width: 480px) {
+        .card { width: calc(100vw - 30px) !important; padding: 20px 16px !important; }
+        .container { padding-top: 90px !important; align-items: flex-start !important; }
+    }
+
+
+    /* hamburger */
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 8px;
+        margin-left: auto;
+        z-index: 9999;
+        position: relative;
+    }
+    .hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: white;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: rgba(10,25,45,0.98);
+        z-index: 9999;
+        flex-direction: column;
+        padding: 10px 0;
+        backdrop-filter: blur(10px);
+        overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+        padding: 14px 24px;
+        color: rgba(255,255,255,0.85);
+        text-decoration: none;
+        font-size: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        transition: 0.2s;
+    }
+    .mobile-menu a:hover { background: rgba(0,198,255,0.1); color: white; }
+    .mobile-menu a.logout-mob { color: #ff6b6b; }
+
+    @media (max-width: 600px) {
+        .nav-links { display: none !important; }
+        .hamburger { display: flex !important; }
+        .navbar { height: 80px !important; padding: 0 16px !important; }
+        .logo { top: 12px !important; }
+        .logo img { width: 60px !important; height: 60px !important; margin: -8px -8px -8px -8px !important; }
+        .logo span { font-size: 14px !important; margin-top: 4px !important; }
+    }
+
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+        /* containerul devine scrollabil, altfel cardul se taie */
+        .container {
+            padding: 96px 14px 40px !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+        .card { width: 100% !important; max-width: 420px !important; padding: 24px 18px !important; }
+        .card h2 { font-size: 17px !important; }
+    }
+    @media (max-width: 380px) {
+        .card { padding: 20px 14px !important; }
+    }
+
+</style>
+</head>
+
+<body>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // initializare firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQe0VLbBbRi7l8AkDxx30jL0DfnJSlpeM",
+        authDomain: "soundvera-66452.firebaseapp.com",
+        projectId: "soundvera-66452",
+        storageBucket: "soundvera-66452.firebasestorage.app",
+        messagingSenderId: "255538443530",
+        appId: "1:255538443530:web:018577a62aafddf45776f3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    let currentUser = null;
+
+    // seteaza avatarul in toate locurile din pagina
+    function setAvatarEverywhere(src) {
+        document.getElementById('avatar').innerHTML = `<img src="${src}" alt="avatar">`;
+        document.getElementById('dropAvatar').innerHTML = `<img src="${src}" alt="avatar">`;
+        document.getElementById('navAvatar').innerHTML = `<img src="${src}" alt="avatar">`;
+    }
+
+    // verifica autentificarea si incarca datele utilizatorului
+    onAuthStateChanged(auth, (user) => {
+        if (!user) { window.location.href = 'index.html'; return; }
+        currentUser = user;
+
+        document.getElementById('usernameInput').value = user.displayName || 'N/A';
+        document.getElementById('email').textContent = user.email;
+        document.getElementById('dropUsername').textContent = user.displayName || 'N/A';
+
+        // incarca avatarul din localStorage
+        const savedPhoto = localStorage.getItem('avatar_' + user.uid);
+        if (savedPhoto) {
+            setAvatarEverywhere(savedPhoto);
+        } else {
+            const letter = (user.displayName || '?')[0].toUpperCase();
+            document.getElementById('avatar').innerHTML = `<span>${letter}</span>`;
+            document.getElementById('dropAvatar').textContent = letter;
+            document.getElementById('navAvatar').textContent = letter;
+        }
+    });
+
+    // upload poza profil
+    document.getElementById('avatarWrap').addEventListener('click', () => {
+        document.getElementById('avatarInput').click();
+    });
+
+    document.getElementById('avatarInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const dataUrl = ev.target.result;
+            setAvatarEverywhere(dataUrl);
+            // salveaza in localStorage
+            localStorage.setItem('avatar_' + currentUser.uid, dataUrl);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // activeaza editarea username-ului
+    document.getElementById('editBtn').addEventListener('click', () => {
+        const input = document.getElementById('usernameInput');
+        const saveBtn = document.getElementById('saveUsername');
+        input.readOnly = false;
+        input.focus();
+        input.style.borderColor = '#00c6ff';
+        input.style.background = 'rgba(0,198,255,0.08)';
+        saveBtn.style.display = 'block';
+    });
+
+    // salveaza username nou in Firebase si Firestore
+    document.getElementById('saveUsername').addEventListener('click', async () => { 
+        const input = document.getElementById('usernameInput');
+        const saveBtn = document.getElementById('saveUsername');
+        const msg = document.getElementById('msg');
+        const newName = input.value.trim();
+
+        if (!newName) {
+            msg.textContent = 'Introdu un nume valid!';
+            msg.className = 'msg error';
+            return;
+        }
+
+        try {
+            await updateProfile(currentUser, { displayName: newName });
+            await setDoc(doc(db, 'users', currentUser.uid), { username: newName }, { merge: true });
+
+            document.getElementById('dropUsername').textContent = newName;
+            
+            const savedPhoto = localStorage.getItem('avatar_' + currentUser.uid);
+            if (!savedPhoto) {
+                const letter = newName[0].toUpperCase();
+                document.getElementById('avatar').innerHTML = `<span>${letter}</span>`;
+                document.getElementById('dropAvatar').textContent = letter;
+                document.getElementById('navAvatar').textContent = letter;
+            }
+            input.readOnly = true;
+            input.style.borderColor = 'rgba(0,198,255,0.2)';
+            input.style.background = 'rgba(255,255,255,0.05)';
+            saveBtn.style.display = 'none';
+
+            msg.textContent = 'Username actualizat cu succes!';
+            msg.className = 'msg success';
+        } catch (error) {
+            console.error(error);
+            msg.textContent = 'Eroare: ' + error.message;
+            msg.className = 'msg error';
+        }
+    });
+
+    // dropdown cont
+    document.getElementById('contBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('dropdownMenu').classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dropdown')) {
+            document.getElementById('dropdownMenu').classList.remove('active');
+        }
+    });
+
+    // schimba parola — trimite email de resetare
+    document.getElementById('btnChangePw').addEventListener('click', async () => {
+        const msg = document.getElementById('msg');
+        try {
+            await sendPasswordResetEmail(auth, currentUser.email);
+            msg.textContent = 'Email de resetare trimis! Verifică inbox-ul.';
+            msg.className = 'msg success';
+        } catch (error) {
+            msg.textContent = 'Eroare la trimiterea emailului!';
+            msg.className = 'msg error';
+        }
+    });
+
+    // logout din navbar dropdown
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await signOut(auth);
+        window.location.href = 'index.html';
+    });
+
+    // logout din card
+    document.getElementById('btnLogout').addEventListener('click', async () => {
+        await signOut(auth);
+        window.location.href = 'index.html';
+    });
+    // logout din meniul mobil
+    const logoutBtnMob = document.getElementById('logoutBtnMob');
+    if (logoutBtnMob) logoutBtnMob.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await signOut(auth);
+        window.location.href = 'index.html';
+    });
+</script>
+
+<!-- fundal -->
+<div class="wave"></div>
+
+<!-- bule -->
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+
+<!-- note muzicale -->
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+<div class="note">♬</div>
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+
+<!-- navbar -->
+<nav class="navbar">
+    <a href="home.html" class="logo">
+        <img src="assets/images/Logo.png" alt="logo">
+        <span>Soundvera</span>
+    </a>
+    <div class="nav-links">
+        <a href="home.html">🏠 Home</a>
+        <a href="sunete.html">🔊 Sunete</a>
+        <a href="teorie.html">📖 Teorie</a>
+        <a href="quiz.html">🧠 Quiz</a>
+        <a href="joc.html">🎮 Joc</a>
+        <a href="contact.html">📩 Contact</a>
+        <div class="dropdown">
+            <a href="#" class="cont active" id="contBtn">
+                <div class="nav-avatar" id="navAvatar">?</div>
+                Cont
+            </a>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-header">
+                    <div class="dropdown-avatar" id="dropAvatar">?</div>
+                    <span id="dropUsername">Se încarcă...</span>
+                </div>
+                <a href="cont.html">⚙️ Setări cont</a>
+                <a href="achievements.html">🏆 Achievements</a>
+                <a href="#" class="logout" id="logoutBtn">🚪 Log out</a>
+            </div>
+        </div>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+    <a href="home.html">🏠 Home</a>
+    <a href="sunete.html">🔊 Sunete</a>
+    <a href="teorie.html">📖 Teorie</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="joc.html">🎮 Joc</a>
+    <a href="contact.html">📩 Contact</a>
+    <a href="cont.html">⚙️ Setări cont</a>
+    <a href="achievements.html">🏆 Achievements</a>
+    <a href="#" class="logout-mob" id="logoutBtnMob">🚪 Log out</a>
+</div>
+
+<!-- card profil -->
+<div class="container">
+    <div class="card">
+
+        <!-- avatar cu overlay editare -->
+        <div class="avatar-wrap" id="avatarWrap">
+            <div class="avatar" id="avatar"><span>?</span></div>
+            <div class="avatar-overlay">
+                <span>📷</span>
+                <p>Editează</p>
+            </div>
+        </div>
+        <input type="file" id="avatarInput" accept="image/*">
+
+        <h2>Profilul meu</h2>
+
+        <!-- username editabil -->
+        <div class="info-row">
+            <label>Nume utilizator</label>
+            <div class="username-wrap">
+                <input type="text" class="username-input" id="usernameInput" readonly>
+                <span class="edit-btn" id="editBtn">✏️</span>
+            </div>
+            <button class="save-btn" id="saveUsername">Salvează</button>
+        </div>
+
+        <!-- email readonly -->
+        <div class="info-row">
+            <label>Email</label>
+            <div class="value" id="email">Se încarcă...</div>
+        </div>
+
+        <!-- parola mascata -->
+        <div class="info-row">
+            <label>Parolă</label>
+            <div class="value">••••••••</div>
+        </div>
+
+        <div id="msg" class="msg"></div>
+        <div class="divider-line"></div>
+
+        <!-- butoane actiuni -->
+        <button class="btn-change-pw" id="btnChangePw">🔑 Schimbă parola</button>
+        <button class="btn-logout" id="btnLogout">🚪 Deconectează-te</button>
+    </div>
+</div>
+
+<script>
+// ===== MENIU HAMBURGER =====
+function toggleMobileMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+}
+window.toggleMobileMenu = toggleMobileMenu;
+
+// inchide la click in afara
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#hamburger') && !e.target.closest('#mobileMenu')) {
+        var h = document.getElementById('hamburger');
+        var m = document.getElementById('mobileMenu');
+        if (h) h.classList.remove('open');
+        if (m) m.classList.remove('open');
+    }
+});
+
+// inchide cand apesi pe un link
+document.querySelectorAll('#mobileMenu a').forEach(function(a) {
+    a.addEventListener('click', function() {
+        document.getElementById('hamburger').classList.remove('open');
+        document.getElementById('mobileMenu').classList.remove('open');
+    });
+});
+
+// inchide daca revii pe desktop
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 600) {
+        document.getElementById('hamburger').classList.remove('open');
+        document.getElementById('mobileMenu').classList.remove('open');
+    }
+});
+</script>
+
+</body>
+</html>

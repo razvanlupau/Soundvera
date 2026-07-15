@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera - Achievements</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+<style>
+html { overflow-x: hidden; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { overflow:hidden; height:100%; width:100%; }
+
+/* variabile globale */
+:root { --bg:#0f2d4a; --accent:#00c6ff; --accent2:#0072ff; --surface:rgba(255,255,255,0.04); --border:rgba(0,198,255,0.18); --muted:rgba(255,255,255,0.5); --green:#00ff88; --gold:#ffc600; }
+body { font-family:Arial,sans-serif; color:white; background:var(--bg); }
+
+/* fundal animat */
+.wave{position: fixed;width:200%;height:200%;top:-50%;left:-50%;background:radial-gradient(circle at 20% 20%,#2d6494 0%,#0f2d4a 65%);animation:moveWave 14s infinite linear;opacity:0.7;z-index:0}
+@keyframes moveWave{0%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
+
+/* bule */
+.bubble{position: fixed;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.2),rgba(0,198,255,0.04));border:1px solid rgba(0,198,255,0.2);animation:floatUp linear infinite;z-index:1}
+@keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:1}90%{opacity:0.5}100%{transform:translateY(-110vh) scale(1.1);opacity:0}}
+.bubble:nth-child(1){width:18px;height:18px;left:5%;bottom:-20px;animation-duration:8s}
+.bubble:nth-child(2){width:10px;height:10px;left:12%;bottom:-20px;animation-duration:6s}
+.bubble:nth-child(3){width:22px;height:22px;left:20%;bottom:-20px;animation-duration:10s}
+.bubble:nth-child(4){width:14px;height:14px;right:8%;bottom:-20px;animation-duration:7s}
+.bubble:nth-child(5){width:20px;height:20px;right:18%;bottom:-20px;animation-duration:9s}
+.bubble:nth-child(6){width:10px;height:10px;right:5%;bottom:-20px;animation-duration:5s}
+
+/* note muzicale */
+.note{position: fixed;font-size:26px;animation:floatNote linear infinite;opacity:0;color:rgba(0,198,255,0.5);user-select:none;z-index:1}
+@keyframes floatNote{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:0.7}90%{opacity:0.15}100%{transform:translateY(-90vh) rotate(-10deg);opacity:0}}
+.note:nth-child(7){left:7%;bottom:10%;animation-duration:9s;font-size:22px}
+.note:nth-child(8){left:18%;bottom:20%;animation-duration:12s;animation-delay:2s;font-size:30px}
+.note:nth-child(9){left:28%;bottom:5%;animation-duration:8s;animation-delay:4s;font-size:18px}
+.note:nth-child(10){right:7%;bottom:15%;animation-duration:10s;animation-delay:1s;font-size:26px}
+.note:nth-child(11){right:20%;bottom:25%;animation-duration:11s;animation-delay:3s;font-size:20px}
+.note:nth-child(12){right:30%;bottom:8%;animation-duration:7s;animation-delay:5s;font-size:28px}
+.note:nth-child(13){left:40%;bottom:3%;animation-duration:13s;animation-delay:1.5s;font-size:16px}
+
+/* navbar */
+.navbar{position:fixed;top:0;left:0;width:100%;height:105px;display:flex;align-items:center;padding:0 25px;z-index:100;border-bottom:1px solid rgba(0,198,255,0.2)}
+.logo{position:absolute;top:5px;left:0;z-index:10;display:flex;align-items:center;gap:2px;font-size:22px;font-weight:bold;text-decoration:none;color:white}
+.logo img{width:120px;height:120px;object-fit:contain;margin:-15px -10px -15px -10px}
+.logo span{color:#0099cc;margin-top:10px}
+.nav-links{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,0.75);padding:8px 16px;border-radius:30px;transition:0.3s}
+.nav-links a:hover{color:white;background:rgba(0,198,255,0.15)}
+.nav-links .active{color:#00c6ff;background:rgba(0,198,255,0.15)}
+
+/* dropdown cont */
+.dropdown{position:relative}
+.dropdown .cont{background:linear-gradient(135deg,#00c6ff,#0072ff);color:white;font-weight:bold;box-shadow:0 4px 15px rgba(0,198,255,0.3);cursor:pointer;display:flex;align-items:center;gap:8px}
+.dropdown .cont:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,198,255,0.5)}
+.nav-avatar{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);background:linear-gradient(135deg,#00c6ff,#0072ff);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;overflow:hidden}
+.nav-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.dropdown-menu{display:none;position:absolute;top:110%;right:0;background:rgba(15,45,74,0.97);border:1.5px solid rgba(0,198,255,0.25);border-radius:12px;overflow:hidden;min-width:210px;box-shadow:0 8px 30px rgba(0,0,0,0.4);backdrop-filter:blur(10px);z-index:200}
+.dropdown-menu.active{display:block}
+.dropdown-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.dropdown-avatar{width:35px;height:35px;border-radius:50%;background:linear-gradient(135deg,#00c6ff,#0072ff);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0;overflow:hidden}
+.dropdown-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#dropUsername{font-size:14px;font-weight:bold;color:white}
+.dropdown-menu a{display:block;padding:13px 18px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;transition:0.2s;background:none}
+.dropdown-menu a:hover{background:rgba(0,198,255,0.15);color:white}
+.dropdown-menu a.logout{color:#ff6b6b;border-top:1px solid rgba(255,255,255,0.08)}
+.dropdown-menu a.logout:hover{background:rgba(255,80,80,0.15)}
+
+/* continut */
+.content-wrap{position:fixed;top:105px;left:0;width:100%;height:calc(100vh - 105px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;z-index:5}
+.content-wrap::-webkit-scrollbar{display:none}
+.page{max-width:900px;margin:0 auto;padding:36px 24px 80px}
+
+/* header pagina */
+.page-header{text-align:center;margin-bottom:36px}
+.page-title{font-size:30px;font-weight:bold;margin-bottom:6px;text-shadow:0 0 20px rgba(0,198,255,0.3)}
+.page-title span{color:var(--accent)}
+.page-sub{font-size:13px;color:var(--muted)}
+.progress-summary{display:inline-flex;align-items:center;gap:8px;background:rgba(0,198,255,0.08);border:1px solid rgba(0,198,255,0.2);border-radius:30px;padding:8px 20px;margin-top:12px;font-size:13px}
+.progress-summary span{color:var(--accent);font-weight:bold;font-size:16px}
+
+/* eticheta sectiune */
+.section-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;padding-left:2px}
+
+/* grid achievements */
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+
+/* card achievement */
+.ach-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px 16px;display:flex;flex-direction:column;gap:8px;transition:0.3s;position:relative;overflow:hidden}
+.ach-card.unlocked{border-color:rgba(0,198,255,0.35);background:rgba(0,198,255,0.06)}
+.ach-card.unlocked-gold{border-color:rgba(255,198,0,0.45);background:rgba(255,198,0,0.06)}
+.ach-card.locked{opacity:0.5;filter:grayscale(0.6)}
+
+.ach-icon{font-size:32px;line-height:1}
+.ach-name{font-size:14px;font-weight:bold;color:white}
+.ach-card.locked .ach-name{color:rgba(255,255,255,0.5)}
+.ach-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5}
+.ach-date{font-size:10px;color:var(--accent);margin-top:4px}
+.ach-card.unlocked-gold .ach-date{color:var(--gold)}
+
+/* iconite bifa / lacat */
+.lock-icon{position:absolute;top:12px;right:12px;font-size:14px;opacity:0.3}
+.check-icon{position:absolute;top:12px;right:12px;width:20px;height:20px;background:linear-gradient(135deg,#00ff88,#00cc66);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#0f2d4a;font-weight:bold}
+.check-icon-gold{position:absolute;top:12px;right:12px;width:20px;height:20px;background:linear-gradient(135deg,#ffc600,#ff9500);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#0f2d4a;font-weight:bold}
+
+/* animatie intrare */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page{animation:fadeIn 0.6s ease forwards}
+
+    @media (max-width: 480px) {
+        /* logo */
+        .logo img { width: 70px !important; height: 70px !important; }
+        .logo { font-size: 15px !important; }
+        .logo span { margin-top: 5px !important; }
+
+        /* navbar */
+        .navbar { padding: 0 10px !important; height: 80px !important; }
+        .nav-links { gap: 4px !important; }
+        .nav-links a { padding: 6px 8px !important; font-size: 11px !important; }
+        .dropdown .cont { padding: 6px 10px !important; font-size: 11px !important; }
+
+        /* content */
+        .content-wrap { top: 80px !important; height: calc(100vh - 80px) !important; }
+        .page { padding: 20px 14px 60px !important; }
+
+        /* titluri */
+        h1, .page-title { font-size: 22px !important; }
+        h2 { font-size: 18px !important; }
+
+        body { overflow-y: auto; }
+    }
+
+    @media (max-width: 480px) {
+        .ach-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .ach-card { padding: 12px 10px !important; }
+        .ach-icon { font-size: 22px !important; }
+        .ach-name { font-size: 11px !important; }
+        .ach-desc { font-size: 10px !important; }
+    }
+
+
+    /* hamburger */
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 8px;
+        margin-left: auto;
+        z-index: 9999;
+        position: relative;
+    }
+    .hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: white;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: rgba(10,25,45,0.98);
+        z-index: 9999;
+        flex-direction: column;
+        padding: 10px 0;
+        backdrop-filter: blur(10px);
+        overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+        padding: 14px 24px;
+        color: rgba(255,255,255,0.85);
+        text-decoration: none;
+        font-size: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        transition: 0.2s;
+    }
+    .mobile-menu a:hover { background: rgba(0,198,255,0.1); color: white; }
+    .mobile-menu a.logout-mob { color: #ff6b6b; }
+
+    @media (max-width: 600px) {
+        .nav-links { display: none !important; }
+        .hamburger { display: flex !important; }
+        .navbar { height: 80px !important; padding: 0 16px !important; }
+        .logo { top: 12px !important; }
+        .logo img { width: 60px !important; height: 60px !important; margin: -8px -8px -8px -8px !important; }
+        .logo span { font-size: 14px !important; margin-top: 4px !important; }
+    }
+
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+        .content-wrap { top: 80px !important; height: calc(100vh - 80px) !important; }
+        .page { padding: 24px 14px 60px !important; }
+        .page-title { font-size: 22px !important; }
+        .page-sub { font-size: 12px !important; }
+        .progress-summary { font-size: 12px !important; padding: 7px 16px !important; }
+        .ach-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+    }
+    @media (max-width: 380px) {
+        .ach-grid { grid-template-columns: 1fr !important; }
+    }
+
+</style>
+</head>
+<body>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,doc,getDoc,setDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// initializare firebase
+const app=initializeApp({apiKey:"AIzaSyBQe0VLbBbRi7l8AkDxx30jL0DfnJSlpeM",authDomain:"soundvera-66452.firebaseapp.com",projectId:"soundvera-66452",storageBucket:"soundvera-66452.firebasestorage.app",messagingSenderId:"255538443530",appId:"1:255538443530:web:018577a62aafddf45776f3"});
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+// verifica autentificarea si incarca datele
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='index.html';return;}
+
+  // navbar avatar
+  const s=localStorage.getItem('avatar_'+user.uid),l=(user.displayName||'?')[0].toUpperCase();
+  const na=document.getElementById('navAvatar'),da=document.getElementById('dropAvatar');
+  if(s){na.innerHTML=`<img src="${s}">`;da.innerHTML=`<img src="${s}">`;}else{na.textContent=l;da.textContent=l;}
+  document.getElementById('dropUsername').textContent=user.displayName||'N/A';
+
+  // citeste quiz-urile completate din Firestore
+  let completate=[];
+  try{
+    const snap=await getDoc(doc(db,'quizProgress',user.uid));
+    if(snap.exists())completate=snap.data().completate||[];
+  }catch(e){console.warn(e);}
+
+  // citeste data crearii contului
+  let userData={};
+  try{
+    const usnap=await getDoc(doc(db,'users',user.uid));
+    if(usnap.exists())userData=usnap.data();
+  }catch(e){}
+
+  // citeste istoricul quiz-urilor din localStorage
+  const DOMAINS=['informatica','matematica','fizica','chimie','biologie','medicina','muzica','psihologie','geografie','arhitectura','arta','astronomie'];
+  const histData={};
+  DOMAINS.forEach(d=>{
+    const k='qhist_'+d+'_'+user.uid;
+    histData[d]=JSON.parse(localStorage.getItem(k)||'[]');
+  });
+
+  // verifica quiz final
+  const finalHist=JSON.parse(localStorage.getItem('qhist_final_'+user.uid)||'[]');
+  const finalTrecut=completate.includes('final');
+  const finalDeblocat=completate.length>=12;
+
+  // salveaza achievement "Bun venit" la prima vizita
+  const welcomeKey='ach_welcome_'+user.uid;
+  if(!localStorage.getItem(welcomeKey)){
+    const d=userData.createdAt?new Date(userData.createdAt.seconds*1000):new Date();
+    localStorage.setItem(welcomeKey,d.toLocaleDateString('ro-RO'));
+  }
+
+  // returneaza data primei treceri a unui quiz
+  function getDate(domain){
+    const h=histData[domain]||[];
+    const trecut=h.filter(x=>x.scor>=7);
+    return trecut.length?trecut[trecut.length-1].data:null;
+  }
+
+  // verifica achievement Perfecționist (10/10)
+  function hasPerfect(){
+    return DOMAINS.some(d=>(histData[d]||[]).some(h=>h.scor===10));
+  }
+  function getPerfectDate(){
+    for(const d of DOMAINS){const h=(histData[d]||[]).find(x=>x.scor===10);if(h)return h.data;}return null;
+  }
+
+  // verifica achievement Din prima (trecut la prima incercare)
+  function hasDinPrima(){
+    return DOMAINS.some(d=>{
+      const h=histData[d]||[];
+      if(!h.length)return false;
+      const last=h[h.length-1]; // prima incercare e ultima in array (unshift)
+      return last&&last.scor>=7;
+    });
+  }
+  function getDinPrimaDate(){
+    for(const d of DOMAINS){
+      const h=histData[d]||[];
+      if(!h.length)continue;
+      const last=h[h.length-1];
+      if(last&&last.scor>=7)return last.data;
+    }return null;
+  }
+
+  // verifica achievement Nu te dai batut (picat + trecut)
+  function hasNuTeDAiBatut(){
+    return DOMAINS.some(d=>{
+      const h=histData[d]||[];
+      const picate=h.filter(x=>x.scor<7);
+      const trecute=h.filter(x=>x.scor>=7);
+      return picate.length>=1&&trecute.length>=1;
+    });
+  }
+  function getNuTeDAiBatutDate(){
+    for(const d of DOMAINS){
+      const h=histData[d]||[];
+      const picate=h.filter(x=>x.scor<7);
+      const trecute=h.filter(x=>x.scor>=7);
+      if(picate.length>=1&&trecute.length>=1)return trecute[0].data;
+    }return null;
+  }
+
+  // verifica daca toate cele 12 domenii sunt completate
+  const DOMAINS_ONLY=['informatica','matematica','fizica','chimie','biologie','medicina','muzica','psihologie','geografie','arhitectura','arta','astronomie'];
+  const allDone=DOMAINS_ONLY.every(d=>completate.includes(d));
+  const allDoneDate=allDone?completate.reduce((acc,d)=>{const dt=getDate(d);return dt||acc;},''):null;
+
+  // randeaza achievements
+  renderAchievements({
+    completate, histData, userData, user,
+    hasPerfect:hasPerfect(), perfectDate:getPerfectDate(),
+    hasDinPrima:hasDinPrima(), dinPrimaDate:getDinPrimaDate(),
+    hasNuTeDAiBatut:hasNuTeDAiBatut(), nuTeDAiBatutDate:getNuTeDAiBatutDate(),
+    allDone, finalDeblocat, finalTrecut,
+    finalDate:finalTrecut?finalHist.find(h=>h.scor>=7)?.data:null,
+    welcomeDate:localStorage.getItem('ach_welcome_'+user.uid),
+  });
+});
+
+// dropdown cont
+document.getElementById('contBtn').addEventListener('click',e=>{e.preventDefault();document.getElementById('dropdownMenu').classList.toggle('active');});
+document.addEventListener('click',e=>{if(!e.target.closest('.dropdown'))document.getElementById('dropdownMenu').classList.remove('active');});
+
+// logout
+document.getElementById('logoutBtn').addEventListener('click',async e=>{e.preventDefault();await signOut(auth);window.location.href='index.html';});
+    // logout din meniul mobil
+    const logoutBtnMob = document.getElementById('logoutBtnMob');
+    if (logoutBtnMob) logoutBtnMob.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await signOut(auth);
+        window.location.href = 'index.html';
+    });
+</script>
+
+<!-- fundal -->
+<div class="wave"></div>
+
+<!-- bule -->
+<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+
+<!-- note muzicale -->
+<div class="note">♩</div><div class="note">♪</div><div class="note">♫</div>
+<div class="note">♬</div><div class="note">♩</div><div class="note">♪</div><div class="note">♫</div>
+
+<!-- navbar -->
+<nav class="navbar">
+  <a href="home.html" class="logo"><img src="assets/images/Logo.png" alt="logo"><span>Soundvera</span></a>
+  <div class="nav-links">
+    <a href="home.html">🏠 Home</a><a href="sunete.html">🔊 Sunete</a>
+    <a href="teorie.html">📖 Teorie</a><a href="quiz.html">🧠 Quiz</a>
+    <a href="joc.html">🎮 Joc</a><a href="contact.html">📩 Contact</a>
+    <div class="dropdown">
+      <a href="#" class="cont" id="contBtn"><div class="nav-avatar" id="navAvatar">?</div>Cont</a>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-header"><div class="dropdown-avatar" id="dropAvatar">?</div><span id="dropUsername">Se încarcă...</span></div>
+        <a href="cont.html">⚙️ Setări cont</a><a href="achievements.html" class="active">🏆 Achievements</a>
+        <a href="#" class="logout" id="logoutBtn">🚪 Log out</a>
+      </div>
+    </div>
+  </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+    <a href="home.html">🏠 Home</a>
+    <a href="sunete.html">🔊 Sunete</a>
+    <a href="teorie.html">📖 Teorie</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="joc.html">🎮 Joc</a>
+    <a href="contact.html">📩 Contact</a>
+    <a href="cont.html">⚙️ Setări cont</a>
+    <a href="achievements.html">🏆 Achievements</a>
+    <a href="#" class="logout-mob" id="logoutBtnMob">🚪 Log out</a>
+</div>
+
+<!-- continut principal -->
+<div class="content-wrap">
+<div class="page" id="pageContent">
+  <div class="page-header">
+    <div class="page-title">🏆 Achievements <span>Soundvera</span></div>
+    <div class="page-sub">Completează quiz-urile și deblochează toate realizările</div>
+    <div class="progress-summary">
+      <span id="achCount">0</span> / 20 achievements deblocate
+    </div>
+  </div>
+  <div id="achContainer">
+    <div style="text-align:center;padding:40px;color:rgba(255,255,255,0.3)">Se încarcă...</div>
+  </div>
+</div>
+</div>
+
+<script>
+// informatii per domeniu
+const DOMAIN_INFO = {
+  informatica: {icon:'💻', name:'Informatician Sonor', desc:'Completează quiz-ul de Informatică'},
+  matematica:  {icon:'📐', name:'Matematician Sonor',  desc:'Completează quiz-ul de Matematică'},
+  fizica:      {icon:'🔬', name:'Fizician Sonor',       desc:'Completează quiz-ul de Fizică'},
+  chimie:      {icon:'⚗️', name:'Chimist Sonor',        desc:'Completează quiz-ul de Chimie'},
+  biologie:    {icon:'🐾', name:'Biolog Sonor',         desc:'Completează quiz-ul de Biologie'},
+  medicina:    {icon:'🏥', name:'Doctor Sonor',         desc:'Completează quiz-ul de Medicină'},
+  muzica:      {icon:'🎵', name:'Muzician Sonor',       desc:'Completează quiz-ul de Muzică'},
+  psihologie:  {icon:'🧠', name:'Psiholog Sonor',       desc:'Completează quiz-ul de Psihologie'},
+  geografie:   {icon:'🌍', name:'Geograf Sonor',        desc:'Completează quiz-ul de Geografie'},
+  arhitectura: {icon:'🏗️', name:'Arhitect Sonor',       desc:'Completează quiz-ul de Arhitectură'},
+  arta:        {icon:'🎭', name:'Artist Sonor',         desc:'Completează quiz-ul de Artă'},
+  astronomie:  {icon:'🔭', name:'Astronom Sonor',       desc:'Completează quiz-ul de Astronomie'},
+};
+
+// genereaza HTML pentru un card de achievement
+function card(icon, name, desc, unlocked, date, gold=false){
+  const cls = unlocked ? (gold?'ach-card unlocked-gold':'ach-card unlocked') : 'ach-card locked';
+  const badge = unlocked
+    ? (gold?'<div class="check-icon-gold">✓</div>':'<div class="check-icon">✓</div>')
+    : '<div class="lock-icon">🔒</div>';
+  const dateHtml = unlocked && date ? `<div class="ach-date">✦ ${date}</div>` : '';
+  return `<div class="${cls}">${badge}<div class="ach-icon">${icon}</div><div class="ach-name">${name}</div><div class="ach-desc">${desc}</div>${dateHtml}</div>`;
+}
+
+// randeaza toate achievementurile
+function renderAchievements(data){
+  const {completate,histData,hasPerfect,perfectDate,hasDinPrima,dinPrimaDate,hasNuTeDAiBatut,nuTeDAiBatutDate,allDone,finalDeblocat,finalTrecut,finalDate,welcomeDate} = data;
+
+  const DOMAINS=['informatica','matematica','fizica','chimie','biologie','medicina','muzica','psihologie','geografie','arhitectura','arta','astronomie'];
+
+  function getDate(domain){
+    const h=histData[domain]||[];
+    const trecut=h.filter(x=>x.scor>=7);
+    return trecut.length?trecut[trecut.length-1].data:null;
+  }
+
+  let html='';
+  let total=0;
+
+  // sectiunea Cont
+  html+=`<div class="section-label">👤 Cont</div><div class="ach-grid">`;
+  const w1=!!welcomeDate; if(w1)total++;
+  html+=card('🎉','Bun venit!','Ți-ai creat contul pe Soundvera',w1,welcomeDate);
+  const fidel=completate.length>0; if(fidel)total++;
+  html+=card('🔄','Fidel','Te-ai întors și ai explorat platforma',fidel,fidel?getDate(completate[0]):null);
+  html+=`</div>`;
+
+  // sectiunea Quiz-uri individuale
+  html+=`<div class="section-label">🎓 Quiz-uri individuale</div><div class="ach-grid">`;
+  DOMAINS.forEach(d=>{
+    const done=completate.includes(d);
+    if(done)total++;
+    const {icon,name,desc}=DOMAIN_INFO[d];
+    html+=card(icon,name,desc,done,done?getDate(d):null);
+  });
+  html+=`</div>`;
+
+  // sectiunea Performanta
+  html+=`<div class="section-label">⭐ Performanță</div><div class="ach-grid">`;
+  if(hasPerfect)total++;
+  html+=card('🎯','Perfecționist','Obține 10/10 la orice quiz',hasPerfect,perfectDate);
+  if(hasDinPrima)total++;
+  html+=card('⚡','Din prima!','Treci un quiz la prima încercare',hasDinPrima,dinPrimaDate);
+  if(hasNuTeDAiBatut)total++;
+  html+=card('💪','Nu te dai bătut','Revii și treci un quiz după ce ai picat',hasNuTeDAiBatut,nuTeDAiBatutDate);
+  if(allDone)total++;
+  html+=card('🌟','Maestru Sonor','Completează toate cele 12 quiz-uri',allDone,allDone?getDate(completate[completate.length-1]):null,true);
+  html+=`</div>`;
+
+  // sectiunea Quiz Final
+  html+=`<div class="section-label">🏆 Quiz Final</div><div class="ach-grid">`;
+  if(finalDeblocat)total++;
+  html+=card('🔓','Finalist','Deblochezi accesul la quiz-ul final — toate 12 completate!',finalDeblocat,finalDeblocat?getDate(completate[completate.length-1]):null,true);
+  if(finalTrecut)total++;
+  html+=card('👑','Campion Soundvera','Treci quiz-ul final și obții certificatul!',finalTrecut,finalDate,true);
+  html+=`</div>`;
+
+  document.getElementById('achContainer').innerHTML=html;
+  document.getElementById('achCount').textContent=total;
+
+  // drag scroll
+  const cw=document.querySelector('.content-wrap');
+  let isDown=false,startY,st;
+  cw.addEventListener('mousedown',e=>{isDown=true;cw.style.cursor='grabbing';startY=e.pageY-cw.offsetTop;st=cw.scrollTop;});
+  document.addEventListener('mouseup',()=>{isDown=false;cw.style.cursor='default';});
+  document.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();cw.scrollTop=st-(e.pageY-cw.offsetTop-startY)*1.5;});
+}
+</script>
+<script>
+// ===== MENIU HAMBURGER =====
+function toggleMobileMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+}
+window.toggleMobileMenu = toggleMobileMenu;
+
+// inchide la click in afara
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#hamburger') && !e.target.closest('#mobileMenu')) {
+        var h = document.getElementById('hamburger');
+        var m = document.getElementById('mobileMenu');
+        if (h) h.classList.remove('open');
+        if (m) m.classList.remove('open');
+    }
+});
+
+// inchide cand apesi pe un link
+document.querySelectorAll('#mobileMenu a').forEach(function(a) {
+    a.addEventListener('click', function() {
+        document.getElementById('hamburger').classList.remove('open');
+        document.getElementById('mobileMenu').classList.remove('open');
+    });
+});
+
+// inchide daca revii pe desktop
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 600) {
+        document.getElementById('hamburger').classList.remove('open');
+        document.getElementById('mobileMenu').classList.remove('open');
+    }
+});
+</script>
+
+</body>
+</html>

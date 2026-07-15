@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera - Login</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+
+<style>
+html { overflow-x:hidden; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: Arial, sans-serif;
+        color: white;
+        overflow: hidden;
+        background: #0f2d4a;
+        height: 100vh;
+        width: 100vw;
+    }
+
+    /* fundal animat */
+    .wave {
+        position: fixed;
+        width: 200%; height: 200%;
+        top: -50%; left: -50%;
+        background: radial-gradient(circle at 20% 20%, #2d6494 0%, #0f2d4a 65%);
+        animation: moveWave 12s infinite linear;
+        opacity: 0.75;
+        z-index: 0;
+    }
+
+    @keyframes moveWave {
+        0% { transform: translate(0,0) scale(1); }
+        50% { transform: translate(60px, 40px) scale(1.05); }
+        100% { transform: translate(0,0) scale(1); }
+    }
+
+    /* bule */
+    .bubble {
+        position: fixed;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.25), rgba(0,198,255,0.05));
+        border: 1px solid rgba(0,198,255,0.25);
+        animation: floatUp linear infinite;
+        z-index: 1;
+    }
+
+    @keyframes floatUp {
+        0%   { transform: translateY(0) scale(1); opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 0.6; }
+        100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+    }
+
+    .bubble:nth-child(1) { width: 18px; height: 18px; left: 5%;   bottom: -20px; animation-duration: 8s;  animation-delay: 0s; }
+    .bubble:nth-child(2) { width: 10px; height: 10px; left: 12%;  bottom: -20px; animation-duration: 6s;  animation-delay: 2s; }
+    .bubble:nth-child(3) { width: 22px; height: 22px; left: 20%;  bottom: -20px; animation-duration: 10s; animation-delay: 1s; }
+    .bubble:nth-child(4) { width: 14px; height: 14px; right: 8%;  bottom: -20px; animation-duration: 7s;  animation-delay: 3s; }
+    .bubble:nth-child(5) { width: 20px; height: 20px; right: 18%; bottom: -20px; animation-duration: 9s;  animation-delay: 0.5s; }
+    .bubble:nth-child(6) { width: 10px; height: 10px; right: 5%;  bottom: -20px; animation-duration: 5s;  animation-delay: 4s; }
+
+    /* note muzicale */
+    .note {
+        position: fixed;
+        font-size: 28px;
+        animation: floatNote linear infinite;
+        z-index: 1;
+        opacity: 0;
+        color: rgba(0,198,255,0.7);
+        user-select: none;
+    }
+
+    @keyframes floatNote {
+        0%   { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+        10%  { opacity: 0.8; }
+        50%  { transform: translateY(-40vh) rotate(15deg) scale(1); opacity: 0.6; }
+        90%  { opacity: 0.2; }
+        100% { transform: translateY(-90vh) rotate(-10deg) scale(0.9); opacity: 0; }
+    }
+
+    .note:nth-child(7)  { left: 7%;   bottom: 10%; animation-duration: 9s;  animation-delay: 0s;   font-size: 24px; }
+    .note:nth-child(8)  { left: 18%;  bottom: 20%; animation-duration: 12s; animation-delay: 2s;   font-size: 32px; }
+    .note:nth-child(9)  { left: 28%;  bottom: 5%;  animation-duration: 8s;  animation-delay: 4s;   font-size: 20px; }
+    .note:nth-child(10) { right: 7%;  bottom: 15%; animation-duration: 10s; animation-delay: 1s;   font-size: 28px; }
+    .note:nth-child(11) { right: 20%; bottom: 25%; animation-duration: 11s; animation-delay: 3s;   font-size: 22px; }
+    .note:nth-child(12) { right: 30%; bottom: 8%;  animation-duration: 7s;  animation-delay: 5s;   font-size: 30px; }
+    .note:nth-child(13) { left: 40%;  bottom: 3%;  animation-duration: 13s; animation-delay: 1.5s; font-size: 18px; }
+
+    /* logo */
+    .logo {
+        position: absolute;
+        top: 5px;
+        left: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 22px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .logo img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        margin: -15px -10px -15px -10px;
+    }
+
+    .logo span {
+        color: #0099cc;
+        margin-top: 10px; 
+    }
+
+    /* container principal */
+    .container {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        animation: fadeIn 1.5s ease forwards;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 6px;
+        text-shadow: 0 0 30px rgba(0,198,255,0.3);
+        text-align: center;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: rgba(255,255,255,0.6);
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    /* mesaje eroare / succes */
+    .msg {
+        width: 320px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        text-align: center;
+        margin-bottom: 10px;
+        display: none;
+    }
+
+    .msg.error {
+        background: rgba(255,80,80,0.15);
+        border: 1px solid rgba(255,80,80,0.4);
+        color: #ff6b6b;
+        display: block;
+    }
+
+    .msg.success {
+        background: rgba(0,255,150,0.1);
+        border: 1px solid rgba(0,255,150,0.3);
+        color: #00ff96;
+        display: block;
+    }
+
+    /* campuri formular */
+    .form-group { width: 320px; margin-bottom: 12px; }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 5px;
+        padding-left: 5px;
+    }
+
+    .input-wrap {
+        position: relative;
+        width: 100%;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 11px 45px 11px 18px;
+        border-radius: 30px;
+        border: 1.5px solid rgba(0,198,255,0.3);
+        background: rgba(255,255,255,0.07);
+        color: white;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .form-group input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .form-group input:focus {
+        border-color: #00c6ff;
+        background: rgba(0,198,255,0.1);
+        box-shadow: 0 0 15px rgba(0,198,255,0.2);
+    }
+
+    /* toggle parola */
+    .toggle-pw {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px;
+        user-select: none;
+        z-index: 2;
+    }
+
+    /* link ai uitat parola */
+    .forgot {
+        width: 320px;
+        text-align: right;
+        margin-top: -6px;
+        margin-bottom: 12px;
+        padding-right: 5px;
+    }
+
+    .forgot a {
+        font-size: 12px;
+        color: rgba(0,198,255,0.7);
+        text-decoration: none;
+    }
+
+    .forgot a:hover { text-decoration: underline; }
+
+    /* buton login */
+    .btn-login {
+        width: 320px;
+        padding: 12px;
+        border-radius: 30px;
+        border: none;
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0,198,255,0.4);
+        margin-top: 5px;
+    }
+
+    .btn-login:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 30px rgba(0,198,255,0.7);
+    }
+
+    /* separator */
+    .divider {
+        width: 320px;
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        gap: 10px;
+        color: rgba(255,255,255,0.4);
+        font-size: 13px;
+    }
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(255,255,255,0.2);
+    }
+
+    /* buton google */
+    .btn-google {
+        width: 320px;
+        padding: 12px;
+        border-radius: 30px;
+        border: 1.5px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.07);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-google:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: white;
+        transform: scale(1.03);
+        box-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+
+    .btn-google img { width: 20px; height: 20px; }
+
+    /* link spre register */
+    .register-link {
+        margin-top: 18px;
+        font-size: 13px;
+        color: rgba(255,255,255,0.5);
+        text-align: center;
+    }
+
+    .register-link a {
+        color: #00c6ff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .register-link a:hover { text-decoration: underline; }
+
+    /* animatie generala */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+
+    @media (max-width: 600px) {
+        .logo { top: 12px !important; }
+        .logo img { width: 60px !important; height: 60px !important; margin: -8px -8px -8px -8px !important; }
+        .logo span { font-size: 14px !important; margin-top: 4px !important; }
+        h1 { font-size: 22px !important; }
+        .subtitle { font-size: 12px !important; }
+        .form-group { width: calc(100vw - 40px) !important; }
+        .msg { width: calc(100vw - 40px) !important; }
+        .btn-login { width: calc(100vw - 40px) !important; }
+        .btn-register { width: calc(100vw - 40px) !important; }
+        .btn-google { width: calc(100vw - 40px) !important; }
+        .divider { width: calc(100vw - 40px) !important; }
+        .forgot { width: calc(100vw - 40px) !important; }
+        body { overflow-y: auto; overflow-x: hidden; }
+        .container { justify-content: flex-start; padding-top: 100px; }
+    }
+
+</style>
+</head>
+
+<body>
+
+<!-- fundal -->
+<div class="wave"></div>
+
+<!-- bule -->
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+
+<!-- note muzicale -->
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+<div class="note">♬</div>
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+
+<!-- logo -->
+<a href="index.html" class="logo">
+    <img src="assets/images/Logo.png" alt="logo">
+    <span>Soundvera</span>
+</a>
+
+<!-- formular login -->
+<div class="container">
+    <h1>Intră în cont</h1>
+    <div class="subtitle">Descoperă misterele comunității Soundvera</div>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <div class="input-wrap">
+            <input type="email" id="email" placeholder="ex: gicapopa@email.com">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Parolă</label>
+        <div class="input-wrap">
+            <input type="password" id="password" placeholder="Minim 8 caractere">
+            <span class="toggle-pw" id="togglePassword">👁️</span>
+        </div>
+    </div>
+
+    <!-- link resetare parola -->
+    <div class="forgot">
+        <a href="#" id="forgotLink">Ai uitat parola?</a>
+    </div>
+
+    <button class="btn-login" id="btnLogin">Loghează-te</button>
+
+    <div class="divider">sau</div>
+
+    <!-- login cu google -->
+    <button class="btn-google" id="btnGoogle">
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+        Continuă cu Google
+    </button>
+
+    <div class="register-link">
+        Nu ai un cont? <a href="register.html">Creează unul</a>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // initializare firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQe0VLbBbRi7l8AkDxx30jL0DfnJSlpeM",
+        authDomain: "soundvera-66452.firebaseapp.com",
+        projectId: "soundvera-66452",
+        storageBucket: "soundvera-66452.firebasestorage.app",
+        messagingSenderId: "255538443530",
+        appId: "1:255538443530:web:018577a62aafddf45776f3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // toggle vizibilitate parola
+    document.getElementById('togglePassword').addEventListener('click', () => {
+        const input = document.getElementById('password');
+        const toggle = document.getElementById('togglePassword');
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggle.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            toggle.textContent = '👁️';
+        }
+    });
+
+    // afiseaza mesaj eroare sau succes
+    function showMsg(text, type) {
+        const el = document.getElementById('msg');
+        el.textContent = text;
+        el.className = 'msg ' + type;
+    }
+
+    // login cu email si parola
+    document.getElementById('btnLogin').addEventListener('click', async () => {
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        if (!email || !password) {
+            showMsg('Completează toate câmpurile!', 'error');
+            return;
+        }
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            showMsg('Autentificare reușită! Redirecționare...', 'success');
+            setTimeout(() => window.location.href = 'home.html', 1500);
+        } catch (error) {
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                showMsg('Email sau parolă incorectă!', 'error');
+            } else if (error.code === 'auth/too-many-requests') {
+                showMsg('Prea multe încercări. Încearcă mai târziu!', 'error');
+            } else {
+                showMsg('Eroare: ' + error.message, 'error');
+            }
+        }
+    });
+
+    // login cu Google
+    document.getElementById('btnGoogle').addEventListener('click', async () => {
+        const provider = new GoogleAuthProvider();
+        try {
+            await signInWithPopup(auth, provider);
+            showMsg('Autentificare reușită! Redirecționare...', 'success');
+            setTimeout(() => window.location.href = 'home.html', 1500);
+        } catch (error) {
+            showMsg('Eroare Google: ' + error.message, 'error');
+        }
+    });
+
+    // resetare parola — trimite email prin Firebase
+    document.getElementById('forgotLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        if (!email) {
+            showMsg('Introdu emailul mai întâi!', 'error');
+            return;
+        }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            showMsg('Email de resetare trimis! Verifică inbox-ul.', 'success');
+        } catch (error) {
+            showMsg('Emailul nu există în sistem!', 'error');
+        }
+    });
+</script>
+
+</body>
+</html>

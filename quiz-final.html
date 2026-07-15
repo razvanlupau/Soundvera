@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera - Quiz Final</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+<style>
+html { overflow-x:hidden; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { overflow:hidden; height:100%; width:100%; }
+:root { --bg:#0f2d4a; --accent:#00c6ff; --accent2:#0072ff; --surface:rgba(255,255,255,0.04); --border:rgba(0,198,255,0.18); --muted:rgba(255,255,255,0.5); --green:#00ff88; --red:#ff4466; }
+body { font-family:Arial,sans-serif; color:white; background:var(--bg); }
+.wave{position:fixed;width:200%;height:200%;top:-50%;left:-50%;background:radial-gradient(circle at 20% 20%,#2d6494 0%,#0f2d4a 65%);animation:moveWave 14s infinite linear;opacity:0.7;z-index:0}
+@keyframes moveWave{0%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
+.bubble{position:fixed;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.2),rgba(0,198,255,0.04));border:1px solid rgba(0,198,255,0.2);animation:floatUp linear infinite;z-index:1}
+@keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:1}90%{opacity:0.5}100%{transform:translateY(-110vh) scale(1.1);opacity:0}}
+.bubble:nth-child(1){width:18px;height:18px;left:5%;bottom:-20px;animation-duration:8s}
+.bubble:nth-child(2){width:10px;height:10px;left:12%;bottom:-20px;animation-duration:6s}
+.bubble:nth-child(3){width:22px;height:22px;left:20%;bottom:-20px;animation-duration:10s}
+.bubble:nth-child(4){width:14px;height:14px;right:8%;bottom:-20px;animation-duration:7s}
+.bubble:nth-child(5){width:20px;height:20px;right:18%;bottom:-20px;animation-duration:9s}
+.bubble:nth-child(6){width:10px;height:10px;right:5%;bottom:-20px;animation-duration:5s}
+.note{position:fixed;font-size:26px;animation:floatNote linear infinite;opacity:0;color:rgba(0,198,255,0.5);user-select:none;z-index:1}
+@keyframes floatNote{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:0.7}90%{opacity:0.15}100%{transform:translateY(-90vh) rotate(-10deg);opacity:0}}
+.note:nth-child(7){left:7%;bottom:10%;animation-duration:9s;font-size:22px}
+.note:nth-child(8){left:18%;bottom:20%;animation-duration:12s;animation-delay:2s;font-size:30px}
+.note:nth-child(9){left:28%;bottom:5%;animation-duration:8s;animation-delay:4s;font-size:18px}
+.note:nth-child(10){right:7%;bottom:15%;animation-duration:10s;animation-delay:1s;font-size:26px}
+.note:nth-child(11){right:20%;bottom:25%;animation-duration:11s;animation-delay:3s;font-size:20px}
+.note:nth-child(12){right:30%;bottom:8%;animation-duration:7s;animation-delay:5s;font-size:28px}
+.note:nth-child(13){left:40%;bottom:3%;animation-duration:13s;animation-delay:1.5s;font-size:16px}
+.navbar{position:fixed;top:0;left:0;width:100%;height:105px;display:flex;align-items:center;padding:0 25px;z-index:100;border-bottom:1px solid rgba(0,198,255,0.2)}
+.logo{position:absolute;top:5px;left:0;z-index:10;display:flex;align-items:center;gap:2px;font-size:22px;font-weight:bold;text-decoration:none;color:white}
+.logo img{width:120px;height:120px;object-fit:contain;margin:-15px -10px -15px -10px}
+.logo span{color:#0099cc;margin-top:10px}
+.nav-links{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,0.75);padding:8px 16px;border-radius:30px;transition:0.3s}
+.nav-links a:hover{color:white;background:rgba(0,198,255,0.15)}
+.nav-links .active{color:#00c6ff;background:rgba(0,198,255,0.15)}
+.dropdown{position:relative}
+.dropdown .cont{background:linear-gradient(135deg,#00c6ff,#0072ff);color:white;font-weight:bold;box-shadow:0 4px 15px rgba(0,198,255,0.3);cursor:pointer;display:flex;align-items:center;gap:8px}
+.dropdown .cont:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,198,255,0.5)}
+.nav-avatar{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);background:linear-gradient(135deg,#00c6ff,#0072ff);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;overflow:hidden}
+.nav-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.dropdown-menu{display:none;position:absolute;top:110%;right:0;background:rgba(15,45,74,0.97);border:1.5px solid rgba(0,198,255,0.25);border-radius:12px;overflow:hidden;min-width:210px;box-shadow:0 8px 30px rgba(0,0,0,0.4);backdrop-filter:blur(10px);z-index:200}
+.dropdown-menu.active{display:block}
+.dropdown-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.dropdown-avatar{width:35px;height:35px;border-radius:50%;background:linear-gradient(135deg,#00c6ff,#0072ff);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0;overflow:hidden}
+.dropdown-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#dropUsername{font-size:14px;font-weight:bold;color:white}
+.dropdown-menu a{display:block;padding:13px 18px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;transition:0.2s;background:none}
+.dropdown-menu a:hover{background:rgba(0,198,255,0.15);color:white}
+.dropdown-menu a.logout{color:#ff6b6b;border-top:1px solid rgba(255,255,255,0.08)}
+.dropdown-menu a.logout:hover{background:rgba(255,80,80,0.15)}
+.content-wrap{position:fixed;top:105px;left:0;width:100%;height:calc(100vh - 105px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;z-index:5}
+.content-wrap::-webkit-scrollbar{display:none}
+.page{max-width:700px;margin:0 auto;padding:40px 24px 80px}
+.quiz-header{text-align:center;margin-bottom:32px}
+.quiz-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,198,255,0.1);border:1px solid rgba(0,198,255,0.3);border-radius:30px;padding:5px 16px;font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.quiz-title{font-size:28px;font-weight:bold;margin-bottom:6px;text-shadow:0 0 20px rgba(0,198,255,0.3)}
+.quiz-title span{color:var(--accent)}
+.quiz-sub{font-size:13px;color:var(--muted)}
+.q-progress{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.q-progress-label{font-size:12px;color:var(--muted);white-space:nowrap}
+.q-progress-bar{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.q-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width 0.4s ease}
+.question-block{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px}
+.question-num{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.question-type-badge{display:inline-block;font-size:10px;padding:2px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);margin-left:8px}
+.question-text{font-size:16px;font-weight:bold;line-height:1.5;margin-bottom:20px}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;cursor:pointer;transition:0.25s;user-select:none}
+.option:hover{background:rgba(0,198,255,0.08);border-color:rgba(0,198,255,0.35)}
+.option.selected{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.45)}
+.option-letter{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;flex-shrink:0;transition:0.25s}
+.option.selected .option-letter{background:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.85);color:#0f2d4a}
+.option-text{font-size:14px}
+.tf-options{display:flex;gap:12px}
+.tf-btn{flex:1;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:white;font-size:15px;font-weight:bold;cursor:pointer;transition:0.25s}
+.tf-btn:hover{background:rgba(0,198,255,0.08);border-color:rgba(0,198,255,0.35)}
+.tf-btn.selected{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.45)}
+.fill-input{width:100%;padding:12px 18px;border-radius:12px;border:1px solid rgba(0,198,255,0.25);background:rgba(255,255,255,0.05);color:white;font-size:15px;outline:none;transition:0.3s}
+.fill-input:focus{border-color:var(--accent);background:rgba(0,198,255,0.08);box-shadow:0 0 12px rgba(0,198,255,0.15)}
+.fill-input::placeholder{color:rgba(255,255,255,0.25)}
+.unit-hint{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:14px;font-style:italic}
+.unit-container{display:grid;grid-template-columns:1fr 50px 1fr;gap:8px}
+.unit-col{display:flex;flex-direction:column}
+.unit-arrows-col{display:flex;flex-direction:column}
+.arrows-wrap{flex:1;position:relative;min-height:20px}
+.unit-col-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;height:20px}
+.unit-items{display:flex;flex-direction:column;gap:8px}
+.unit-item{padding:12px 16px;border-radius:10px;border:2px dashed rgba(255,255,255,0.15);background:rgba(255,255,255,0.03);font-size:13px;cursor:pointer;transition:0.25s;user-select:none;line-height:1.4;text-align:center}
+.unit-item:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.4);border-style:dashed}
+.unit-item.selected-left{background:rgba(255,165,0,0.12);border-color:rgba(255,165,0,0.7);border-style:solid;color:#ffaa00;font-weight:bold}
+.unit-item.matched{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.25);border-style:solid;color:rgba(255,255,255,0.45);cursor:pointer}
+.unit-item.matched:hover{background:rgba(255,80,80,0.08);border-color:rgba(255,80,80,0.4);color:rgba(255,100,100,0.7)}
+.btn-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:15px;font-weight:bold;border:none;border-radius:50px;cursor:pointer;transition:0.3s;box-shadow:0 4px 20px rgba(0,198,255,0.35);margin-top:12px}
+.btn-submit:hover{transform:scale(1.02);box-shadow:0 6px 28px rgba(0,198,255,0.55)}
+.popup-overlay{position:fixed;inset:0;background:rgba(7,20,35,0.8);backdrop-filter:blur(5px);z-index:999;display:flex;align-items:center;justify-content:center}
+.popup-overlay.hidden{display:none}
+.popup{background:linear-gradient(135deg,rgba(15,45,74,0.99),rgba(10,30,55,0.99));border:1.5px solid rgba(0,198,255,0.3);border-radius:22px;padding:36px 32px;max-width:520px;width:90%;max-height:85vh;overflow-y:auto;scrollbar-width:none;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards}
+.popup::-webkit-scrollbar{display:none}
+@keyframes popIn{from{opacity:0;transform:scale(0.9) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.popup-score{text-align:center;margin-bottom:24px}
+.popup-score-num{font-size:56px;font-weight:bold;line-height:1}
+.popup-score-num.pass{color:var(--green)}
+.popup-score-num.fail{color:var(--red)}
+.popup-score-label{font-size:14px;color:var(--muted);margin-top:4px}
+.popup-result-text{font-size:18px;font-weight:bold;margin-top:8px}
+.popup-result-text.pass{color:var(--green)}
+.popup-result-text.fail{color:var(--red)}
+.popup-divider{height:1px;background:rgba(0,198,255,0.15);margin:20px 0}
+.popup-greseli-title{font-size:13px;font-weight:bold;color:rgba(255,255,255,0.7);margin-bottom:14px;letter-spacing:1px;text-transform:uppercase}
+.greseala-item{background:rgba(255,68,102,0.07);border:1px solid rgba(255,68,102,0.2);border-radius:14px;padding:16px;margin-bottom:12px}
+.greseala-q{font-size:13px;font-weight:bold;margin-bottom:8px;color:white}
+.greseala-corect{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px}
+.greseala-corect span{color:var(--green)}
+.greseala-explicatie{font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.7;background:rgba(0,198,255,0.05);border-left:2px solid rgba(0,198,255,0.3);padding:10px 12px;border-radius:0 8px 8px 0}
+.popup-no-greseli{text-align:center;padding:16px;font-size:14px;color:var(--green)}
+.popup-btns{display:flex;gap:10px;margin-top:20px}
+.popup-btn{flex:1;padding:12px;border-radius:50px;border:none;font-size:14px;font-weight:bold;cursor:pointer;transition:0.3s}
+.popup-btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.popup-btn-primary:hover{transform:scale(1.02)}
+.popup-btn-secondary{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:white}
+.popup-btn-secondary:hover{background:rgba(255,255,255,0.12)}
+
+.hist-btn{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:50;background:rgba(15,45,74,0.92);border:1px solid rgba(0,198,255,0.25);border-radius:12px;padding:12px 14px;cursor:pointer;transition:0.3s;color:white;font-size:12px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:4px;backdrop-filter:blur(10px)}
+.hist-btn:hover{background:rgba(0,198,255,0.12);border-color:rgba(0,198,255,0.5)}
+.hist-btn-icon{font-size:20px}
+.hist-overlay{position:fixed;inset:0;background:rgba(7,20,35,0.75);backdrop-filter:blur(4px);z-index:998;display:flex;align-items:center;justify-content:center}
+.hist-overlay.hidden{display:none}
+.hist-popup{background:linear-gradient(135deg,rgba(15,45,74,0.99),rgba(10,30,55,0.99));border:1.5px solid rgba(0,198,255,0.3);border-radius:20px;padding:28px 24px;width:320px;max-height:70vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.hist-popup-title{font-size:15px;font-weight:bold;margin-bottom:16px;text-align:center}
+.hist-popup-title span{color:#00c6ff}
+.hist-list{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px;scrollbar-width:none}
+.hist-list::-webkit-scrollbar{display:none}
+.hist-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.hist-item.pass{border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.04)}
+.hist-item.fail{border-color:rgba(255,68,102,0.3);background:rgba(255,68,102,0.04)}
+.hist-score{font-size:20px;font-weight:bold}
+.hist-item.pass .hist-score{color:#00ff88}
+.hist-item.fail .hist-score{color:#ff4466}
+.hist-meta{font-size:11px;color:rgba(255,255,255,0.4);text-align:right}
+.hist-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:bold}
+.hist-badge.pass{background:rgba(0,255,136,0.15);color:#00ff88}
+.hist-badge.fail{background:rgba(255,68,102,0.15);color:#ff4466}
+.hist-empty{text-align:center;color:rgba(255,255,255,0.3);font-size:13px;padding:20px 0}
+.hist-close-btn{margin-top:16px;width:100%;padding:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:30px;color:white;font-size:13px;cursor:pointer;transition:0.2s}
+.hist-close-btn:hover{background:rgba(255,255,255,0.13)}
+.cert-overlay{position:fixed;inset:0;background:rgba(7,20,35,0.85);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center}
+.cert-overlay.hidden{display:none}
+.cert-popup{background:linear-gradient(135deg,rgba(15,45,74,0.99),rgba(10,30,55,0.99));border:1.5px solid rgba(255,198,0,0.4);border-radius:22px;padding:40px 36px;max-width:460px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(255,198,0,0.08);animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards}
+@keyframes popIn{from{opacity:0;transform:scale(0.9) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.cert-icon{font-size:52px;margin-bottom:16px}
+.cert-title{font-size:22px;font-weight:bold;margin-bottom:8px;color:#ffc600}
+.cert-sub{font-size:14px;color:rgba(255,255,255,0.55);margin-bottom:24px;line-height:1.6}
+.cert-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.cert-btn-primary{padding:12px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#ffc600,#ff9500);color:#0f2d4a;font-size:14px;font-weight:bold;cursor:pointer;transition:0.3s;box-shadow:0 4px 20px rgba(255,198,0,0.35)}
+.cert-btn-primary:hover{transform:scale(1.04);box-shadow:0 6px 28px rgba(255,198,0,0.55)}
+.cert-btn-secondary{padding:12px 24px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);font-size:14px;cursor:pointer;transition:0.3s}
+.cert-btn-secondary:hover{background:rgba(255,255,255,0.12);color:white}
+
+/* ===== HAMBURGER ===== */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;margin-left:auto;z-index:9999;position:relative}
+.hamburger span{display:block;width:24px;height:2px;background:white;border-radius:2px;transition:0.3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* ===== MENIU MOBIL ===== */
+.mobile-menu{display:none;position:fixed;top:80px;left:0;width:100%;height:calc(100vh - 80px);background:rgba(10,25,45,0.98);z-index:9999;flex-direction:column;padding:10px 0;backdrop-filter:blur(10px);overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:14px 24px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:15px;border-bottom:1px solid rgba(255,255,255,0.05);transition:0.2s}
+.mobile-menu a:hover{background:rgba(0,198,255,0.1);color:white}
+.mobile-menu a.active{color:#00c6ff}
+.mobile-menu a.logout-mob{color:#ff6b6b}
+
+/* Popup-urile trebuie sa fie DEASUPRA hamburgerului (9999), altfel acesta apare peste ele.
+   Se pot si derula, altfel lista de greseli se taie pe ecran mic.
+   ATENTIE: cert-overlay si popup-overlay aveau AMBELE z-index:999, iar cert-overlay e mai sus
+   in DOM -> popup-ul de certificat se deschidea IN SPATELE celui de rezultat si butonul
+   de descarcare nu putea fi apasat. Certificatul primeste cel mai mare z-index. */
+.hist-overlay{z-index:10000 !important;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.hist-popup{margin:auto}
+.popup-overlay{z-index:10001 !important;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.popup{margin:auto}
+.cert-overlay{z-index:10002 !important;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.cert-popup{margin:auto}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 600px){
+  .nav-links{display:none !important}
+  .hamburger{display:flex !important}
+  .navbar{height:80px !important;padding:0 16px !important}
+  .logo{top:12px !important;font-size:14px !important}
+  .logo img{width:60px !important;height:60px !important;margin:-8px !important}
+  .logo span{margin-top:4px !important}
+
+  .content-wrap{top:80px !important;height:calc(100vh - 80px) !important}
+  .page{padding:26px 14px 90px !important}
+
+  .quiz-title{font-size:22px !important}
+  .quiz-sub{font-size:12px !important}
+  .quiz-badge{font-size:10px !important;padding:4px 12px !important}
+
+  /* bara de progres pe doua randuri */
+  .q-progress{flex-direction:column !important;align-items:stretch !important;gap:6px !important}
+  .q-progress-label{text-align:center}
+
+  .question-block{padding:18px 14px !important;border-radius:16px !important}
+  .question-text{font-size:15px !important}
+  .option{padding:11px 12px !important;gap:10px !important;align-items:flex-start !important}
+  .option-text{font-size:13px !important;line-height:1.45}
+  .option-letter{margin-top:1px}
+  .tf-btn{padding:12px !important;font-size:14px !important}
+
+  /* exercitiul de potrivire: coloana din mijloc (sagetile) e prea ingusta pe telefon */
+  .unit-container{grid-template-columns:1fr 26px 1fr !important;gap:6px !important}
+  .unit-item{padding:10px 8px !important;font-size:11px !important}
+  .unit-col-label{font-size:9px !important;letter-spacing:1px !important}
+
+  .fill-input{font-size:14px !important;padding:11px 14px !important}
+  .btn-submit{font-size:14px !important;padding:13px !important}
+
+  /* ---- POPUP REZULTAT (scor + greseli) ---- */
+  .popup{
+    width:100% !important;
+    max-width:100% !important;
+    max-height:none !important;
+    padding:24px 18px !important;
+    border-radius:18px !important;
+  }
+  .popup-score-num{font-size:42px !important}
+  .popup-score-label{font-size:12px !important}
+  .popup-result-text{font-size:16px !important}
+  .popup-greseli-title{font-size:11px !important}
+  .greseala-item{padding:13px 12px !important;border-radius:12px !important}
+  .greseala-q{font-size:12.5px !important;line-height:1.45}
+  .greseala-corect{font-size:11.5px !important}
+  .greseala-explicatie{font-size:11.5px !important;padding:9px 10px !important;line-height:1.6 !important}
+  /* cele 2 butoane nu incap unul langa altul -> unul sub altul */
+  .popup-btns{flex-direction:column !important;gap:8px !important}
+  .popup-btn{width:100% !important;padding:13px !important}
+
+  /* ---- POPUP ISTORIC ---- */
+  .hist-popup{
+    width:100% !important;
+    max-width:400px !important;
+    max-height:80vh !important;
+    padding:22px 16px !important;
+  }
+  .hist-item{padding:10px 12px !important}
+  .hist-score{font-size:18px !important}
+  .hist-meta{font-size:10px !important}
+
+  /* ---- POPUP CERTIFICAT (doar in quiz-final) ---- */
+  /* NU se atinge canvas-ul certificatului (900x636, generat in memorie) —
+     imaginea descarcata ramane identica indiferent de ecran. */
+  .cert-popup{
+    width:100% !important;
+    max-width:100% !important;
+    padding:28px 20px !important;
+    border-radius:18px !important;
+  }
+  .cert-icon{font-size:42px !important;margin-bottom:12px !important}
+  .cert-title{font-size:18px !important}
+  .cert-sub{font-size:13px !important;margin-bottom:20px !important}
+  /* butoanele unul sub altul, pe toata latimea */
+  .cert-btns{flex-direction:column !important;gap:8px !important}
+  .cert-btn-primary,.cert-btn-secondary{width:100% !important;padding:13px !important}
+
+  /* butonul de istoric coboara jos-dreapta, ca sa nu acopere raspunsurile */
+  .hist-btn{
+    top:auto !important;
+    bottom:20px !important;
+    right:16px !important;
+    transform:none !important;
+    flex-direction:row !important;
+    gap:5px !important;
+    padding:10px 14px !important;
+    border-radius:30px !important;
+    font-size:11px !important;
+    box-shadow:0 6px 20px rgba(0,0,0,0.35);
+  }
+  /* "Istoricul / tau" pe doua randuri -> pe unul singur */
+  .hist-btn span:last-child{display:none}
+}
+
+@media (max-width: 380px){
+  .quiz-title{font-size:19px !important}
+  .popup-score-num{font-size:36px !important}
+  .unit-item{font-size:10px !important;padding:9px 6px !important}
+}
+</style>
+</head>
+<body>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,doc,setDoc,getDoc,arrayUnion}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyBQe0VLbBbRi7l8AkDxx30jL0DfnJSlpeM",authDomain:"soundvera-66452.firebaseapp.com",projectId:"soundvera-66452",storageBucket:"soundvera-66452.firebasestorage.app",messagingSenderId:"255538443530",appId:"1:255538443530:web:018577a62aafddf45776f3"});
+const auth=getAuth(app);const db=getFirestore(app);window._cu=null;
+// verifica autentificarea si popup certificat daca a trecut deja
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='index.html';return;}
+  window._cu=user;
+  const s=localStorage.getItem('avatar_'+user.uid),l=(user.displayName||'?')[0].toUpperCase();
+  const na=document.getElementById('navAvatar'),da=document.getElementById('dropAvatar');
+  if(s){na.innerHTML=`<img src="${s}">`;da.innerHTML=`<img src="${s}">`;}else{na.textContent=l;da.textContent=l;}
+  document.getElementById('dropUsername').textContent=user.displayName||'N/A';
+
+  // Verifica daca a trecut deja quiz-ul final
+  try{
+    const snap=await getDoc(doc(db,'quizProgress',user.uid));
+    if(snap.exists()&&(snap.data().completate||[]).includes('final')){
+      window._numeUser=user.displayName||'Utilizator';
+      window._emailUser=user.email||'';
+      document.getElementById('certOverlay').classList.remove('hidden');
+    }
+  }catch(e){console.warn(e);}
+});
+document.getElementById('contBtn').addEventListener('click',e=>{e.preventDefault();document.getElementById('dropdownMenu').classList.toggle('active');});
+document.addEventListener('click',e=>{if(!e.target.closest('.dropdown'))document.getElementById('dropdownMenu').classList.remove('active');});
+document.getElementById('logoutBtn').addEventListener('click',async e=>{e.preventDefault();await signOut(auth);window.location.href='index.html';});
+// salveaza in Firestore ca quiz final completat
+window.salveazaQuiz=async()=>{
+  if(!window._cu)return;
+  try{await setDoc(doc(db,'quizProgress',window._cu.uid),{completate:arrayUnion('final')},{merge:true});}catch(e){console.warn(e);}
+};
+</script>
+
+<script>
+// cheia localStorage pentru istoricul quiz-ului final
+function _histKey(){return 'qhist_final_'+(window._cu?window._cu.uid:'guest');}
+// salveaza scorul in localStorage
+function salveazaIstoric(scor){
+  var h=JSON.parse(localStorage.getItem(_histKey())||'[]');
+  var now=new Date();
+  h.unshift({scor:scor,data:now.toLocaleDateString('ro-RO'),ora:now.toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem(_histKey(),JSON.stringify(h.slice(0,30)));
+}
+
+// genereaza certificatul cu Canvas API si il descarca ca PNG
+function descarcaCertificat(){
+  var nume = window._numeUser || 'Utilizator';
+  var initiale = nume.split(' ').map(function(n){return n[0];}).join('').toUpperCase().slice(0,2);
+  var avatarSrc = window._cu ? localStorage.getItem('avatar_'+window._cu.uid) : null;
+
+  function getDataRomana(){
+    var now=new Date();
+    var luni=['ianuarie','februarie','martie','aprilie','mai','iunie','iulie','august','septembrie','octombrie','noiembrie','decembrie'];
+    return now.getDate()+' '+luni[now.getMonth()]+' '+now.getFullYear();
+  }
+
+  function deseneaza(avatarImg, logoImg){
+    var W=900, H=636;
+    var canvas=document.createElement('canvas');
+    canvas.width=W; canvas.height=H;
+    var ctx=canvas.getContext('2d');
+
+    // Fundal alb
+    ctx.fillStyle='#ffffff';
+    ctx.beginPath();
+    ctx.roundRect(0,0,W,H,14);
+    ctx.fill();
+
+    // Bara aur sus
+    ctx.fillStyle='#c9a227';
+    ctx.beginPath(); ctx.roundRect(0,0,W,10,[14,14,0,0]); ctx.fill();
+
+    // Bara aur jos
+    ctx.beginPath(); ctx.roundRect(0,H-10,W,10,[0,0,14,14]); ctx.fill();
+
+    // Linii laterale
+    ctx.fillStyle='rgba(201,162,39,0.22)';
+    ctx.fillRect(0,10,7,H-20);
+    ctx.fillRect(W-7,10,7,H-20);
+
+    // WATERMARK subtil
+    ctx.save();
+    ctx.fillStyle='rgba(201,162,39,0.04)';
+    ctx.font='bold 110px Arial';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('SOUNDVERA',W/2,H/2);
+    ctx.restore();
+
+    // AVATAR stanga sus
+    var avX=70, avY=70, avR=42;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(avX,avY,avR,0,Math.PI*2); ctx.clip();
+    if(avatarImg){
+      ctx.drawImage(avatarImg,avX-avR,avY-avR,avR*2,avR*2);
+    } else {
+      ctx.fillStyle='#fdf3d8'; ctx.fill();
+      ctx.restore();
+      ctx.save();
+      ctx.fillStyle='#c9a227';
+      ctx.font='bold 20px Arial';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(initiale,avX,avY);
+    }
+    ctx.restore();
+    ctx.strokeStyle='#c9a227'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(avX,avY,avR,0,Math.PI*2); ctx.stroke();
+
+    // LOGO dreapta sus
+    if(logoImg){
+      ctx.drawImage(logoImg,W-130,10,100,100);
+    } else {
+      ctx.textAlign='right'; ctx.fillStyle='#c9a227';
+      ctx.font='bold 18px Arial'; ctx.textBaseline='middle';
+      ctx.fillText('Soundvera',W-30,65);
+    }
+
+    // TITLU
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#8a6914';
+    ctx.font='11px Arial';
+    ctx.fillText('CERTIFICAT DE ABSOLVIRE',W/2,148);
+    ctx.fillStyle='#c9a227';
+    ctx.font='bold 28px Arial';
+    ctx.fillText('Soundvera',W/2,182);
+
+    // Ornament linie
+    ctx.strokeStyle='rgba(201,162,39,0.4)'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(240,198); ctx.lineTo(415,198); ctx.stroke();
+    ctx.beginPath(); ctx.arc(W/2,198,4,0,Math.PI*2);
+    ctx.fillStyle='rgba(201,162,39,0.4)'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(485,198); ctx.lineTo(660,198); ctx.stroke();
+
+    // TEXT principal
+    ctx.fillStyle='#999'; ctx.font='13px Arial';
+    ctx.fillText('Aceasta certifică faptul că',W/2,250);
+    ctx.fillStyle='#1a1000'; ctx.font='bold 26px Arial';
+    ctx.fillText(nume,W/2,290);
+    ctx.fillStyle='#666'; ctx.font='14px Arial';
+    ctx.fillText('a completat cu succes toate modulele platformei Soundvera',W/2,325);
+    ctx.font='13px Arial'; ctx.fillStyle='#888';
+    ctx.fillText('și a demonstrat cunoașterea sunetului în toate domeniile studiate',W/2,350);
+
+    // Linie separator jos
+    ctx.strokeStyle='rgba(201,162,39,0.25)'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(60,430); ctx.lineTo(W-60,430); ctx.stroke();
+
+    // DATA stanga jos
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#aaa'; ctx.font='11px Arial';
+    ctx.fillText('DATA EMITERII',80,468);
+    ctx.fillStyle='#333'; ctx.font='14px Arial';
+    ctx.fillText(getDataRomana(),80,500);
+    ctx.strokeStyle='rgba(201,162,39,0.4)'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(80,512); ctx.lineTo(280,512); ctx.stroke();
+
+    // DREAPTA JOS — Cu respect, Echipa Soundvera
+    ctx.textAlign='right';
+    ctx.fillStyle='#aaa'; ctx.font='12px Arial';
+    ctx.fillText('Cu respect,',W-80,468);
+    ctx.fillStyle='#c9a227'; ctx.font='bold 15px Arial';
+    ctx.fillText('Echipa Soundvera',W-80,500);
+    ctx.strokeStyle='rgba(201,162,39,0.4)'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.moveTo(W-290,512); ctx.lineTo(W-80,512); ctx.stroke();
+
+    // Descarca
+    var link=document.createElement('a');
+    link.download='Certificat-Soundvera-'+nume.replace(/\s+/g,'-')+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  // Incearca sa incarce avatar si logo simultan
+  var loaded=0;
+  var avatarImg=null, logoImg=null;
+  function tryRender(){ loaded++; if(loaded>=2) deseneaza(avatarImg,logoImg); }
+
+  var logo=new Image();
+  logo.onload=function(){ logoImg=logo; tryRender(); };
+  logo.onerror=function(){ tryRender(); };
+  logo.src='assets/images/Logo.png';
+
+  if(avatarSrc){
+    var av=new Image();
+    av.onload=function(){ avatarImg=av; tryRender(); };
+    av.onerror=function(){ tryRender(); };
+    av.src=avatarSrc;
+  } else {
+    tryRender();
+  }
+}
+
+// afiseaza popup-ul cu certificatul
+function arataCertificat(){
+  window._numeUser = window._cu ? (window._cu.displayName||'Utilizator') : 'Utilizator';
+  window._emailUser = window._cu ? (window._cu.email||'') : '';
+  document.getElementById('certOverlay').classList.remove('hidden');
+}
+// afiseaza popup-ul cu istoricul
+function deschideIstoric(){
+  var h=JSON.parse(localStorage.getItem(_histKey())||'[]');
+  var list=document.getElementById('histList');
+  if(!h.length){list.innerHTML='<div class="hist-empty">Nicio incercare inca.</div>';}
+  else{list.innerHTML=h.map(function(e){return '<div class="hist-item '+(e.scor>=18?'pass':'fail')+'"><div><div class="hist-score">'+e.scor+'/25</div><span class="hist-badge '+(e.scor>=18?'pass':'fail')+'">'+(e.scor>=18?'TRECUT':'PICAT')+'</span></div><div class="hist-meta">'+e.data+'<br>'+e.ora+'</div></div>';}).join('');}
+  document.getElementById('histOverlay').classList.remove('hidden');
+}
+// inchide popup-ul
+function inchideIstoric(){document.getElementById('histOverlay').classList.add('hidden');}
+</script>
+
+<!-- fundal -->
+<div class="wave"></div>
+<!-- bule -->
+<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+<!-- note muzicale -->
+<div class="note">♩</div><div class="note">♪</div><div class="note">♫</div>
+<div class="note">♬</div><div class="note">♩</div><div class="note">♪</div><div class="note">♫</div>
+
+<!-- navbar -->
+<nav class="navbar">
+  <a href="home.html" class="logo"><img src="assets/images/Logo.png" alt="logo"><span>Soundvera</span></a>
+  <div class="nav-links">
+    <a href="home.html">🏠 Home</a><a href="sunete.html">🔊 Sunete</a>
+    <a href="teorie.html">📖 Teorie</a><a href="quiz.html" class="active">🧠 Quiz</a>
+    <a href="joc.html">🎮 Joc</a><a href="contact.html">📩 Contact</a>
+    <div class="dropdown">
+      <a href="#" class="cont" id="contBtn"><div class="nav-avatar" id="navAvatar">?</div>Cont</a>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-header"><div class="dropdown-avatar" id="dropAvatar">?</div><span id="dropUsername">Se încarcă...</span></div>
+        <a href="cont.html">⚙️ Setări cont</a><a href="achievements.html">🏆 Achievements</a>
+        <a href="#" class="logout" id="logoutBtn">🚪 Log out</a>
+      </div>
+    </div>
+  </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+</nav>
+<!-- meniu mobil -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="home.html">🏠 Home</a>
+  <a href="sunete.html">🔊 Sunete</a>
+  <a href="teorie.html">📖 Teorie</a>
+  <a href="quiz.html" class="active">🧠 Quiz</a>
+  <a href="joc.html">🎮 Joc</a>
+  <a href="contact.html">📩 Contact</a>
+  <a href="cont.html">⚙️ Setări cont</a>
+  <a href="achievements.html">🏆 Achievements</a>
+  <a href="#" class="logout-mob" id="logoutBtnMob">🚪 Log out</a>
+</div>
+
+<!-- POPUP CERTIFICAT -->
+<!-- popup certificat -->
+<div class="cert-overlay hidden" id="certOverlay">
+  <div class="cert-popup">
+    <div class="cert-icon">🏆</div>
+    <div class="cert-title">Felicitări, Campion Soundvera!</div>
+    <div class="cert-sub">Ai trecut deja Quiz-ul Final. Certificatul tău te așteaptă — poți să îl descarci oricând.</div>
+    <div class="cert-btns">
+      <button class="cert-btn-primary" onclick="descarcaCertificat()">🎓 Descarcă Certificatul</button>
+      <button class="cert-btn-secondary" onclick="document.getElementById('certOverlay').classList.add('hidden')">Continuă Quiz-ul</button>
+    </div>
+  </div>
+</div>
+
+<!-- buton istoric -->
+<button class="hist-btn" onclick="deschideIstoric()">
+  <span class="hist-btn-icon">📋</span>
+  <span>Istoricul</span>
+  <span>tau</span>
+</button>
+<!-- popup istoric -->
+<div class="hist-overlay hidden" id="histOverlay" onclick="if(event.target===this)inchideIstoric()">
+  <div class="hist-popup">
+    <div class="hist-popup-title">📋 Istoric — <span>Quiz Final</span></div>
+    <div class="hist-list" id="histList"></div>
+    <button class="hist-close-btn" onclick="inchideIstoric()">Inchide</button>
+  </div>
+</div>
+
+<!-- continut -->
+<div class="content-wrap">
+<div class="page">
+  <div class="quiz-header">
+    <div class="quiz-badge">🏆 Quiz Final</div>
+    <div class="quiz-title">Quiz <span>Final</span></div>
+    <div class="quiz-sub">25 de întrebări · Minim 18/25 pentru a trece</div>
+  </div>
+  <div class="q-progress">
+    <div class="q-progress-label" id="progressLabel">0 / 25 răspunse</div>
+    <div class="q-progress-bar"><div class="q-progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+  <div id="quizContainer"></div>
+  <button class="btn-submit" onclick="submitQuiz()">Verifică răspunsurile</button>
+</div>
+</div>
+
+<div class="popup-overlay hidden" id="popupOverlay">
+  <div class="popup" id="popupContent"></div>
+</div>
+
+<script>
+// banca de intrebari — 60 total, se aleg 25 aleatoriu
+const BANCA = [
+  {id:'a1',type:'abcd',text:'Care este rata de eșantionare standard pe un CD audio?',options:['22.050 Hz','44.100 Hz','96.000 Hz','8.000 Hz'],correct:1,explicatie:'CD-ul standard folosește 44.100 Hz (44,1 kHz). Teorema Nyquist spune că trebuie să eșantionezi la cel puțin 2× frecvența maximă audibilă (20 kHz).'},
+  {id:'a2',type:'abcd',text:'Care este viteza sunetului în aer la 20°C?',options:['220 m/s','343 m/s','440 m/s','1.480 m/s'],correct:1,explicatie:'Viteza sunetului în aer la 20°C este 343 m/s. Crește cu ~0,6 m/s per grad Celsius.'},
+  {id:'a3',type:'abcd',text:'Ce neurotransmițător eliberează creierul când asculți o melodie plăcută?',options:['Serotonină','Adrenalină','Dopamină','Cortizol'],correct:2,explicatie:'Când asculți o melodie plăcută, creierul eliberează dopamină — același neurotransmițător ca la mâncare delicioasă sau îndrăgostire.'},
+  {id:'a4',type:'abcd',text:'Ce fenomen stă la baza curățării cu ultrasunete?',options:['Rezonanța acustică','Efectul Doppler','Cavitația acustică','Interferența constructivă'],correct:2,explicatie:'Curățarea cu ultrasunete se bazează pe cavitația acustică — bule microscopice care implodează violent la ~5.000°C.'},
+  {id:'a5',type:'abcd',text:'Ce organ din urechea internă transformă vibrațiile în semnale electrice?',options:['Vestibulul','Timpanul','Cohleea','Nicovala'],correct:2,explicatie:'Cohleea este un tub spiral de 35 mm cu ~15.000 celule ciliare care transformă vibrațiile în semnale electrice.'},
+  {id:'a6',type:'abcd',text:'Ce descrie formula L = 10 × log₁₀(I / I₀)?',options:['Viteza sunetului','Nivelul sonor în decibeli','Frecvența fundamentală','Lungimea de undă'],correct:1,explicatie:'Formula L = 10 × log₁₀(I / I₀) calculează nivelul sonor în decibeli (dB). I₀ este pragul minim al auzului uman (10⁻¹² W/m²).'},
+  {id:'a7',type:'abcd',text:'Ce tehnică recreează manual sunetele în studio pentru film?',options:['ADR','Foley','Sound Design','Re-recording Mix'],correct:1,explicatie:'Foley, inventat de Jack Foley în anii 1920, recreează fizic sunete în studio sincronizat cu imaginea — pași, texturi, mișcări.'},
+  {id:'a8',type:'abcd',text:'Care este cel mai tare sunet natural înregistrat în istoria omenirii?',options:['Cutremurul din Tohoku 2011','Erupția vulcanului Krakatoa 1883','Explozia nucleară de la Hiroshima','Furtuna Sandy 2012'],correct:1,explicatie:'Erupția Krakatoa din 1883 — estimat la 180 dB la 160 km distanță, auzit până în Australia (4.800 km).'},
+  {id:'a9',type:'abcd',text:'Ce sală de concerte este considerată acustic perfectă, construită în 1870?',options:['Carnegie Hall New York','Sydney Opera House','Musikverein Viena','Elbphilharmonie Hamburg'],correct:2,explicatie:'Musikverein din Viena (1870) — forma "shoebox" și ornamentele bogate difuzează sunetul ideal. Timp de reverberație de 2,0 secunde.'},
+  {id:'a10',type:'abcd',text:'Când a detectat LIGO pentru prima dată unde gravitaționale?',options:['14 septembrie 2003','14 septembrie 2015','4 iulie 2012','11 februarie 2016'],correct:1,explicatie:'LIGO a detectat primele unde gravitaționale pe 14 septembrie 2015 — coliziunea a două găuri negre la 1,3 miliarde de ani lumină. Nobel 2017.'},
+  {id:'a11',type:'abcd',text:'La ce frecvențe lucrează ultrasunetele în ecografia medicală?',options:['20–200 Hz','2–18 MHz','100–500 kHz','0,1–1 Hz'],correct:1,explicatie:'Ecografia medicală folosește 2–18 MHz — mult prea înalte pentru urechea umană. Se reflectă diferit în funcție de tipul de țesut.'},
+  {id:'a12',type:'abcd',text:'Care este raportul de frecvențe al unei octave?',options:['2:3','1:2','3:4','4:5'],correct:1,explicatie:'O octavă are raportul 1:2 — nota de o octavă mai sus are exact dublul frecvenței. Do (261 Hz) → Do superior (522 Hz).'},
+  {id:'a13',type:'abcd',text:'Ce institut a inventat standardul MP3 în 1987?',options:['MIT','Bell Labs','Fraunhofer Institute','IBM Research'],correct:2,explicatie:'Standardul MP3 a fost inventat de Fraunhofer Institute în 1987, folosind masking psihoacustic pentru a elimina informația audio imperceptibilă.'},
+  {id:'a14',type:'abcd',text:'Cine a inventat stetoscopul și în ce an?',options:['William Harvey, 1628','René Laennec, 1816','Louis Pasteur, 1865','Joseph Lister, 1867'],correct:1,explicatie:'René Laennec a inventat stetoscopul în 1816, din jenă de a pune urechea direct pe pieptul pacienților.'},
+  {id:'a15',type:'abcd',text:'Ce explică Efectul Doppler?',options:['Creșterea vitezei sunetului pe timp cald','Schimbarea frecvenței percepute când sursa se deplasează','Reflexia sunetului de pe suprafețe dure','Absorbția sunetului de materiale moi'],correct:1,explicatie:'Efectul Doppler explică de ce frecvența percepută se schimbă când sursa se deplasează — sirena sună mai înalt când se apropie și mai grav când se îndepărtează.'},
+  {id:'a16',type:'abcd',text:'La câți Hz este nota La standard, adoptată internațional în 1939?',options:['432 Hz','440 Hz','444 Hz','480 Hz'],correct:1,explicatie:'Nota La standard are 440 Hz, adoptată internațional în 1939. Aceasta servește ca referință pentru acordarea tuturor instrumentelor muzicale.'},
+  {id:'a17',type:'abcd',text:'Ce procedură medicală distruge pietrele la rinichi folosind unde de șoc fără operație?',options:['HIFU','Ecocardiografie','Litotripsie extracorporală (ESWL)','Sonoporare'],correct:2,explicatie:'ESWL folosește unde de șoc ultrasonice focalizate pe piatră pentru a o dezintegra în bucăți mici, eliminate natural. Fără incizie.'},
+  {id:'a18',type:'abcd',text:'Ce procent din populație experimentează ASMR intens?',options:['5%','20%','50%','75%'],correct:1,explicatie:'Cercetătorii estimează că aproximativ 20% din populație experimentează ASMR intens — furnicături plăcute declanșate de sunete ușoare.'},
+  {id:'a19',type:'abcd',text:'Câte clape are un pian standard?',options:['76','84','88','92'],correct:2,explicatie:'Un pian standard are 88 de clape — de la 27,5 Hz (La cel mai grav) la 4.186 Hz (Do cel mai înalt). Acoperă 7 octave și o terță mică.'},
+  {id:'a20',type:'abcd',text:'În care mediu sunetul se propagă cel mai rapid?',options:['Aer la 20°C','Apă la temperatura camerei','Oțel','Vid'],correct:2,explicatie:'Sunetul se propagă cel mai rapid în oțel — ~5.100 m/s, de 15× mai repede decât în aer. În vid, sunetul nu se propagă deloc.'},
+  {id:'a21',type:'abcd',text:'Ce iluzie auditivă demonstrează că vederea și auzul se negociază constant în creier?',options:['Scala Shepard','Efectul Cocktail Party','Efectul McGurk','Phantom Ringing'],correct:2,explicatie:'Efectul McGurk: dacă vezi buzele cuiva pronunțând "ga" dar auzi "ba", creierul decide că ai auzit "da". Percepția auditivă e influențată de informația vizuală.'},
+  {id:'a22',type:'abcd',text:'La ce temperatură ajunge local implodarea bulelor de cavitație acustică?',options:['100°C','500°C','5.000°C','50°C'],correct:2,explicatie:'Implodarea bulelor de cavitație generează temperaturi locale de ~5.000°C și presiuni de ~500 atm în câteva microsecunde.'},
+  {id:'a23',type:'abcd',text:'Ce este canalul SOFAR în oceanografie?',options:['Un curent oceanic cald','Un strat de apă la ~1.000 m adâncime unde sunetul se propagă mii de km','O zonă de silențiu total în ocean','Un canal subacvatic artificial'],correct:1,explicatie:'SOFAR (Sound Fixing and Ranging) este un strat de apă la ~1.000 m adâncime unde temperatura și presiunea minimizează viteza sunetului. Sunetele rămân prinse și se propagă pe mii de km.'},
+  {id:'a24',type:'abcd',text:'La câte octave sub Do central a detectat NASA unde de presiune în nebuloasa Perseus?',options:['10 octave','27 octave','57 octave','100 octave'],correct:2,explicatie:'NASA a detectat în 2003 unde de presiune în nebuloasa Perseus la o frecvență de 10 milioane de ani per ciclu — de 57 octave sub Do central.'},
+  {id:'a25',type:'abcd',text:'Care este timpul de reverberație optim pentru muzica simfonică?',options:['0,3–0,6 secunde','0,6–1,0 secunde','1,8–2,2 secunde','3,0–4,0 secunde'],correct:2,explicatie:'Muzica simfonică sună cel mai bine la 1,8–2,2 secunde timp de reverberație. Vorbirea necesită 0,6–1,0 secunde.'},
+  {id:'a26',type:'abcd',text:'Din ce sunete a fost creat răgetul T-Rex în Jurassic Park?',options:['Leu + tigru + urs','Elefant + tigru + aligator + pinguin','Rinocer + hipopotam + leu','Crocodil + leu + gorila'],correct:1,explicatie:'Sound designerul Ben Burtt a creat răgetul T-Rex din combinația de elefant, tigru, aligator și pinguin.'},
+  {id:'a27',type:'abcd',text:'Prin ce organ detectează rechinii vibrațiile de joasă frecvență ale prăzii?',options:['Ampulele lui Lorenzini','Linia laterală','Cohleea','Vestibulul'],correct:1,explicatie:'Rechinii detectează vibrațiile de joasă frecvență (1–25 Hz) prin linia laterală — un organ care percepe mișcările apei de la sute de metri distanță.'},
+  {id:'a28',type:'abcd',text:'Câte seminote egale conține o octavă în sistemul temperat egal?',options:['7','10','12','16'],correct:2,explicatie:'O octavă conține 12 seminote egale. Raportul de frecvență dintre două seminote consecutive este ¹²√2 ≈ 1,05946.'},
+  {id:'a29',type:'abcd',text:'Cum funcționează Noise Cancelling activ (ANC)?',options:['Blochează fizic sunetul cu materiale izolante','Generează o undă cu fază inversată (180°) care anulează zgomotul','Amplifică muzica pentru a acoperi zgomotul','Folosește filtre digitale în timp real'],correct:1,explicatie:'Căștile ANC înregistrează zgomotul exterior și generează o undă sonoră cu fază inversată (180°). Undele opuse se anulează prin interferență distructivă.'},
+  {id:'a30',type:'abcd',text:'Ce format audio este comprimat FĂRĂ pierderi de calitate?',options:['MP3','AAC','FLAC','OGG'],correct:2,explicatie:'FLAC (Free Lossless Audio Codec) este comprimat fără pierderi — jumătate din WAV ca dimensiune, dar calitate identică. MP3, AAC și OGG sunt comprimate cu pierderi.'},
+  {id:'f1',type:'fill',text:'Câte celule ciliare conține cohleea umană?',correct:'15000',explicatie:'Cohleea umană conține aproximativ 15.000 de celule ciliare, fiecare răspunzând la o frecvență specifică. Când mor, nu se regenerează.'},
+  {id:'f2',type:'fill',text:'La câți km distanță a fost auzit vulcanul Krakatoa după explozia din 1883?',correct:'4800',explicatie:'Erupția Krakatoa a fost auzită până la 4.800 km distanță (Insula Rodriguez). A ucis 36.000 de oameni și a fost cel mai tare sunet din istoria înregistrată.'},
+  {id:'f3',type:'fill',text:'Modelul Whisper al OpenAI poate transcrie audio în câte limbi?',correct:'99',explicatie:'Modelul Whisper al OpenAI poate transcrie audio în 99 de limbi cu o precizie de peste 95%, antrenat pe 680.000 de ore de audio.'},
+  {id:'f4',type:'fill',text:'La câți Hz vibrează nota La standard?',correct:'440',explicatie:'Nota La standard vibrează la 440 Hz. O octavă mai sus ar fi 880 Hz (de 2× mai mult), o octavă mai jos — 220 Hz.'},
+  {id:'f5',type:'fill',text:'Cu câte procente cresc vânzările într-un supermarket când se redă muzică lentă?',correct:'38',explicatie:'Studiile arată că muzica înceată în supermarketuri crește vânzările cu până la 38% — oamenii stau mai mult și cumpără mai mult.'},
+  {id:'f6',type:'fill',text:'Câte mii de persoane din lume trăiesc cu un implant cohlear?',correct:'700',explicatie:'Peste 700.000 de persoane din lume trăiesc cu implant cohlear — un dispozitiv care convertește sunetele în semnale electrice direct pe nervul auditiv.'},
+  {id:'f7',type:'fill',text:'La câți kHz lucrează curățătoarele cu ultrasunete standard?',correct:'40',explicatie:'Curățătoarele cu ultrasunete standard lucrează la 40 kHz (40.000 Hz). Frecvențe mai mari (100+ kHz) se folosesc pentru circuite electronice delicate.'},
+  {id:'f8',type:'fill',text:'La câte săptămâni de sarcină sunt urechile fătului suficient de dezvoltate pentru a auzi sunete?',correct:'18',explicatie:'La 18 săptămâni de sarcină, urechile fătului sunt suficient de dezvoltate pentru a percepe sunete din exterior.'},
+  {id:'t1',type:'tf',text:'Sunetul se poate propaga în vidul cosmic.',correct:'fals',explicatie:'Fals. Sunetul este o undă mecanică și are nevoie de materie. În vidul spațial nu există molecule, deci sunetul nu se propagă.'},
+  {id:'t2',type:'tf',text:'Celulele ciliare din cohlee se pot regenera după ce sunt distruse de zgomot excesiv.',correct:'fals',explicatie:'Fals. Celulele ciliare din cohlee NU se regenerează — odată distruse, pierderea auzului este permanentă.'},
+  {id:'t3',type:'tf',text:'Analiza Fourier demonstrează că orice sunet complex poate fi descompus în sume de unde sinusoidale simple.',correct:'adevarat',explicatie:'Adevărat. Joseph Fourier a demonstrat în 1822 că orice sunet complex poate fi descompus în sume de sinusoide, fiecare cu frecvență, amplitudine și fază proprie.'},
+  {id:'t4',type:'tf',text:'Dunele de nisip pot produce sunete naturale — un huruit profund audibil de la kilometri distanță.',correct:'adevarat',explicatie:'Adevărat. Anumite dune produc un huruit de 70–105 Hz când nisipul alunecă. Documentat în Sahara, Arabia și Mongolia.'},
+  {id:'t5',type:'tf',text:'Hagia Sophia din Istanbul are una dintre cele mai lungi reverberații din lume — până la 11 secunde când e goală.',correct:'adevarat',explicatie:'Adevărat. Hagia Sophia are RT de 6–11 secunde. Muzica bizantină era compusă special pentru această acustică.'},
+  {id:'t6',type:'tf',text:'HIFU (High Intensity Focused Ultrasound) poate distruge tumori fără incizie chirurgicală.',correct:'adevarat',explicatie:'Adevărat. HIFU focalizează ultrasunete pe o tumoră, ridicând temperatura local la 65–85°C. Celulele canceroase se distrug termic fără incizie.'},
+  {id:'t7',type:'tf',text:'Formatul WAV este un format comprimat cu pierderi, folosit pentru distribuția muzicii online.',correct:'fals',explicatie:'Fals. WAV este un format NECOMPRIMAT, cu calitate maximă și fișiere mari. Este standardul în studio și producție audio profesională.'},
+  {id:'t8',type:'tf',text:'Asistenții vocali (Alexa, Siri) trimit tot ce aud în cloud permanent.',correct:'fals',explicatie:'Fals. Asistenții rulează local un model mic de detecție "wake word". Doar după detectare se trimite audio în cloud pentru procesare completă.'},
+  {id:'t9',type:'tf',text:'Asocierea acordurilor minore cu tristețea este universală în toate culturile lumii.',correct:'fals',explicatie:'Fals. Asocierea minor=trist este parțial culturală, nu universală. Unele culturi din Africa sau Asia nu asociază acordurile minore cu tristețea.'},
+  {id:'t10',type:'tf',text:'Crevetele pistol poate produce prin cavitație o bulă cu temperatura apropiată de cea a suprafeței Soarelui.',correct:'adevarat',explicatie:'Adevărat. Crevetele pistol produce prin cavitație o bulă de ~8.000°C — aproape cât suprafața Soarelui (~5.500°C). Această bulă omoară prada instant.'},
+  {id:'t11',type:'tf',text:'Redshift-ul luminii stelelor este analogul cosmic al Efectului Doppler sonor.',correct:'adevarat',explicatie:'Adevărat. La fel cum sirena sună mai grav când se îndepărtează, lumina galaxiilor care se îndepărtează se deplasează spre roșu (redshift).'},
+  {id:'t12',type:'tf',text:'Exploziile din spațiu în filme sunt acurate din punct de vedere fizic.',correct:'fals',explicatie:'Fals. În vidul spațiului nu există aer care să transmită sunetul, deci exploziile nu ar produce niciun sunet. Hollywood alege drama față de știință.'},
+  {id:'u1',type:'unit',text:'Potrivește viteza sunetului cu mediul de propagare:',pairs:[{left:'343 m/s',right:'Aer la 20°C'},{left:'1.480 m/s',right:'Apă'},{left:'5.100 m/s',right:'Oțel'},{left:'0 m/s',right:'Vid'}],explicatie:'Aer: 343 m/s | Apă: 1.480 m/s (4×) | Oțel: 5.100 m/s (15×) | Vid: 0 m/s — sunetul nu se propagă.'},
+  {id:'u2',type:'unit',text:'Potrivește nota muzicală cu frecvența sa:',pairs:[{left:'Do',right:'261 Hz'},{left:'La',right:'440 Hz'},{left:'Sol',right:'392 Hz'},{left:'Si',right:'494 Hz'}],explicatie:'Do: 261 Hz | La: 440 Hz (referința universală) | Sol: 392 Hz | Si: 494 Hz.'},
+  {id:'u3',type:'unit',text:'Potrivește tehnica medicală cu principiul său sonor:',pairs:[{left:'Ecografie',right:'Ultrasunete 2–18 MHz reflectate de țesuturi'},{left:'ESWL',right:'Unde de șoc dezintegrează pietrele la rinichi'},{left:'HIFU',right:'Ultrasunete ridică temperatura la 65–85°C'},{left:'Implant cohlear',right:'Semnale electrice direct pe nervul auditiv'}],explicatie:'Ecografie: reflexia ultrasunetelor | ESWL: dezintegrare pietre | HIFU: distrugere termică | Implant cohlear: bypass celule ciliare.'},
+  {id:'u4',type:'unit',text:'Potrivește rolul din echipa de sunet a unui film cu responsabilitatea sa:',pairs:[{left:'Sound Mixer',right:'Înregistrează sunetul live pe platoul de filmare'},{left:'Foley Artist',right:'Recreează fizic sunete în studio'},{left:'Sound Designer',right:'Creează efecte sonore unice — nave, monștri'},{left:'Re-recording Mixer',right:'Mixează final dialog, efecte și muzică'}],explicatie:'Sound Mixer: platou | Foley: recreare studio | Sound Designer: efecte unice | Re-recording: mix final.'},
+  {id:'u5',type:'unit',text:'Potrivește animalul cu caracteristica sa sonoră:',pairs:[{left:'Balena albastră',right:'Până la 188 dB, frecvențe 10–40 Hz'},{left:'Liliacul',right:'Ecolocație la 20.000–100.000 Hz'},{left:'Elefantul',right:'Infrasunete 14–35 Hz, percepute prin tălpi'},{left:'Delfinul',right:'Cel mai sofisticat sistem de ecolocație'}],explicatie:'Balena: 188 dB | Liliac: ultrasonice | Elefant: infrasunete prin sol | Delfin: ecolocație prin obiecte solide.'},
+  {id:'u6',type:'unit',text:'Potrivește conceptul astronomic cu descrierea sa:',pairs:[{left:'Unde gravitaționale',right:'Ondulații ale spațiului și timpului — Einstein 1916'},{left:'Redshift',right:'Deplasarea luminii spre roșu — galaxia se îndepărtează'},{left:'Sonificare',right:'Traducerea datelor spațiale în sunete audibile'},{left:'Helioseismologie',right:'Studiul vibrațiilor Soarelui'}],explicatie:'Unde gravitaționale: ondulații spațiu-timp | Redshift: Doppler al luminii | Sonificare: date → sunete | Helioseismologie: vibrații solare.'},
+  {id:'u7',type:'unit',text:'Potrivește intervalul muzical cu raportul său de frecvențe:',pairs:[{left:'Octavă',right:'1:2'},{left:'Cvintă perfectă',right:'2:3'},{left:'Cuartă perfectă',right:'3:4'},{left:'Terță mare',right:'4:5'}],explicatie:'Octavă: 1:2 | Cvintă: 2:3 | Cuartă: 3:4 | Terță mare: 4:5.'},
+  {id:'u8',type:'unit',text:'Potrivește osciorul urechii cu rolul său:',pairs:[{left:'Ciocanul',right:'Preia vibrațiile de la timpan'},{left:'Nicovala',right:'Face legătura între ciocan și scăriță'},{left:'Scărița',right:'Cel mai mic os din corp, 3 mg, amplifică de 20×'},{left:'Cohleea',right:'Transformă vibrațiile în semnale electrice'}],explicatie:'Ciocanul: preia vibrații | Nicovala: face legătura | Scărița: 3 mg, 20× | Cohleea: semnale electrice.'},
+  {id:'u9',type:'unit',text:'Potrivește materialul cu efectul său acustic:',pairs:[{left:'Mochete, perdele, oameni',right:'Absorb sunetul — scurtează reverberația'},{left:'Beton, sticlă, lemn lacuit',right:'Reflectă sunetul — prelungesc reverberația'},{left:'Doi pereți cu aer între ei',right:'Izolație fonică superioară unui perete gros'},{left:'Bass traps în colțuri',right:'Absorb acumulările de sunete grave'}],explicatie:'Moi: absorb | Dure: reflectă | Dublu perete cu aer: izolație | Bass traps: absorb bass-ul.'},
+  {id:'u10',type:'unit',text:'Potrivește formatul audio cu descrierea sa:',pairs:[{left:'OPUS',right:'Optimizat pentru voce, folosit de WhatsApp și Discord'},{left:'WAV',right:'Necomprimat, calitate maximă, fișiere mari'},{left:'AAC',right:'Succesorul MP3, folosit de Apple și YouTube'},{left:'OGG',right:'Open-source, popular în jocuri video'}],explicatie:'OPUS: voce (WhatsApp, Discord) | WAV: necomprimat | AAC: succesorul MP3 | OGG: open-source, jocuri video.'},
+  // ===== INTREBARI NOI =====
+  {id:'n1',type:'abcd',text:'Care este efectul psihologic al muzicii cu tempo rapid asupra corpului uman?',options:['Scade tensiunea arteriala','Creste ritmul cardiac si nivelul de adrenalina','Induce somn profund','Nu are niciun efect fiziologic'],correct:1,explicatie:'Muzica cu tempo rapid creste ritmul cardiac, tensiunea arteriala si nivelul de adrenalina. De aceea sportivii asculta muzica energica inainte de competitii.'},
+  {id:'n2',type:'abcd',text:'Ce este efectul cocktail party in psihoacustica?',options:['Sunetele se amplifica in spatii aglomerate','Creierul poate selecta o singura voce dintr-un zgomot de fond puternic','Muzica devine mai placuta cand esti in grup','Alcoolul imbunatateste perceptia sonora'],correct:1,explicatie:'Efectul cocktail party descrie capacitatea creierului de a se concentra pe o singura sursa sonora dintr-un mediu zgomotos — selectie auditiva avansata.'},
+  {id:'n3',type:'abcd',text:'Ce tip de undă sonora produce o chitara cand se ciupeste o coarda?',options:['Unda sinusoidala pura','Unda complexa cu frecventa fundamentala si armonice','Unda aleatoare fara frecventa definita','Unda ultrasonora'],correct:1,explicatie:'Coarda chitarei produce o unda complexa cu frecventa fundamentala si multiple armonice superioare. Combinatia lor da timbrul specific chitarei.'},
+  {id:'n4',type:'abcd',text:'Ce este misofonia?',options:['Frica de muzica','Sensibilitate extrema la anumite sunete specifice','Incapacitatea de a auzi sunete grave','Halucinatii auditive'],correct:1,explicatie:'Misofonia este o tulburare neurologica in care anumite sunete — masticatie, respiratie, tastare — declanseaza reactii emotionale extreme: furie, anxietate, panica.'},
+  {id:'n5',type:'abcd',text:'Prin ce fenomen fizic functioneaza un sonar marin?',options:['Reflexia luminii in apa','Interferenta undelor electromagnetice','Reflexia undelor sonore pe obiecte subacvatice','Refractia undelor radio'],correct:2,explicatie:'Sonarul emite impulsuri sonore si masoara timpul pana la reflexia lor pe obiecte subacvatice. Cunoscand viteza sunetului in apa (1480 m/s), calculeaza distanta.'},
+  {id:'n6',type:'abcd',text:'Care este numarul de octave pe care le acopera un pian standard?',options:['5 octave','6 octave','7 octave si o terta mica','9 octave'],correct:2,explicatie:'Un pian standard cu 88 clape acopera 7 octave si o terta mica — de la 27,5 Hz (La cel mai grav) la 4186 Hz (Do cel mai inalt).'},
+  {id:'n7',type:'abcd',text:'Ce produce fenomenul de rezonanta in fizica sunetului?',options:['Anularea completa a unui sunet','Amplificarea unui sunet cand frecventa sa coincide cu frecventa naturala a unui obiect','Reflexia sunetului pe suprafete dure','Absorbtia sunetului de materiale moi'],correct:1,explicatie:'Rezonanta apare cand frecventa unui sunet coincide cu frecventa naturala de vibratie a unui obiect. Obiectul vibreaza cu amplitudine maxima — de aceea un pahar poate fi spart de o voce puternica.'},
+  {id:'n8',type:'abcd',text:'Ce este un leitmotiv in muzica de film?',options:['Un efect sonor special','O tema muzicala asociata unui personaj sau situatie','Muzica compusa pentru coloana sonora','Un instrument muzical specific filmelor'],correct:1,explicatie:'Leitmotivul este o tema muzicala scurta asociata unui personaj, loc sau emotie. Wagner l-a popularizat in opere, iar John Williams l-a folosit magistral in Star Wars.'},
+  {id:'n9',type:'abcd',text:'Ce este helioseismologia?',options:['Studiul cutremurelor solare','Studiul vibratiilor Soarelui pentru a-i vedea interiorul','Masurarea distantei de la Pamant la Soare prin ecou','Analiza spectrului sonor al stelelor'],correct:1,explicatie:'Helioseismologia studiaza vibratiile suprafetei solare pentru a deduce structura interna a Soarelui — similar cu cum seismologii studiaza cutremurele pentru a intelege interiorul Pamantului.'},
+  {id:'n10',type:'abcd',text:'Ce se intampla cu viteza sunetului cand temperatura aerului creste?',options:['Scade proportional cu temperatura','Creste cu aproximativ 0,6 m/s per grad Celsius','Ramane constanta indiferent de temperatura','Se dubleaza la fiecare 10 grade'],correct:1,explicatie:'Viteza sunetului in aer creste cu ~0,6 m/s pentru fiecare grad Celsius. La 0C este 331 m/s, la 20C este 343 m/s, la 40C este 355 m/s.'},
+  {id:'n11',type:'abcd',text:'Cum functioneaza un implant cohlear?',options:['Amplifica sunetele ca un aparat auditiv conventional','Inlocuieste celulele ciliare distruse cu electrozi care stimuleaza direct nervul auditiv','Regenereaza celulele ciliare deteriorate','Transmite sunetele prin vibratii osoase'],correct:1,explicatie:'Implantul cohlear are un microfon extern, un procesor si electrozi implantati in cohlee. Converteste sunetele in semnale electrice care stimuleaza direct nervul auditiv, ocolind celulele ciliare distruse.'},
+  {id:'n12',type:'abcd',text:'Ce este sonificarea in contextul NASA?',options:['Trimiterea de semnale sonore in spatiu','Traducerea datelor astronomice in sunete audibile','Detectarea sunetelor din atmosfera altor planete','Comunicarea cu extraterestrii prin sunete'],correct:1,explicatie:'Sonificarea NASA traduce date astronomice — radiatii X, unde radio, campuri magnetice — in sunete audibile. Face stiinta accesibila nevazatorilor si reveleaza tipare greu de observat vizual.'},
+  {id:'n13',type:'abcd',text:'Care este diferenta intre zgomotul alb si zgomotul roz?',options:['Zgomotul alb e mai placut decat cel roz','Zgomotul alb are energie egala per frecventa, cel roz scade cu 3dB per octava','Nu exista nicio diferenta fizica intre ele','Zgomotul roz are frecvente mai inalte decat cel alb'],correct:1,explicatie:'Zgomotul alb are energie egala per Hz — suna ascutit. Zgomotul roz are energie egala per octava (scade 3dB/octava) — suna mai natural, asemanator ploii sau vantului.'},
+  {id:'n14',type:'abcd',text:'Ce este efectul Lombard?',options:['Tendinta de a vorbi mai tare in medii zgomotoase','Distorsionarea vocii in spatii cu eco','Amplificarea sunetelor in sala de concerte','Reducerea zgomotului de fond in inregistrari'],correct:0,explicatie:'Efectul Lombard: oamenii (si animalele) cresc involuntar volumul vocii cand nivelul de zgomot de fond creste. E un reflex auditiv-vocal automat.'},
+  {id:'n15',type:'abcd',text:'Cum produce un delfin ecolocatia?',options:['Prin vibratii ale coardelor vocale','Prin organe specializate in frunte care emit clicuri ultrasonice','Prin frecarea inotacoarelor','Prin batai ritmice ale cozii in apa'],correct:1,explicatie:'Delfinii produc clicuri ultrasonice prin organe specializate in frunte. Sunetele se propaga prin apa, se reflecta pe obiecte si revin la delfin prin mandibula, care conduce vibratiile la urechea interna.'},
+  {id:'n16',type:'abcd',text:'Ce este tinnitus-ul?',options:['O infectie a urechii interne','Perceptia unui sunet (tiuit, zumzet) fara o sursa externa','Pierderea totala a auzului','Un tip de surditate congenitala'],correct:1,explicatie:'Tinnitus-ul este perceptia unui sunet — tiuit, zumzet, fluierat — fara o sursa sonora externa. Afecteaza 10-15% din populatie si poate fi cauzat de expunere la zgomot puternic.'},
+  {id:'n17',type:'abcd',text:'Ce este paradoxul lui Shepard in psihoacustica?',options:['O iluzie in care un sunet pare ca urca infinit fara sa se opreasca','Un sunet care suna diferit la urechi diferite','Un acord care suna trist si vesel simultan','O melodie care suna diferit la viteze diferite'],correct:0,explicatie:'Scala Shepard este o iluzie auditiva in care un sunet pare ca urca (sau coboara) continuu la infinit, fara sa ajunga vreodata mai sus sau mai jos. Creierul este pacalit de suprapunerea octavelor.'},
+  {id:'n18',type:'abcd',text:'Ce rol joaca membrana bazilara in cohlee?',options:['Amplifica sunetele inainte sa ajunga la celulele ciliare','Separa frecventele — fiecare zona raspunde la o frecventa diferita','Protejeaza cohleea de sunete prea puternice','Transmite vibratiile de la timpan la cohlee'],correct:1,explicatie:'Membrana bazilara din cohlee functioneaza ca un analizor de frecvente: baza raspunde la frecvente inalte, varful la frecvente joase. Fiecare zona stimuleaza celulele ciliare corespunzatoare.'},
+  {id:'n19',type:'abcd',text:'Ce este interferenta acustica distructiva?',options:['Cand doua sunete se aduna si devin mai puternice','Cand doua unde sonore cu faze opuse se anuleaza reciproc','Cand un sunet este absorbit de un material','Cand doua instrumente sunt dezacordate'],correct:1,explicatie:'Interferenta distructiva apare cand doua unde sonore identice sunt defazate cu 180 de grade — crestele uneia coincid cu vaile celeilalte si se anuleaza. Principiul sta la baza castilor cu noise cancelling.'},
+  {id:'n20',type:'abcd',text:'Ce este un spectru sonor?',options:['Culorile pe care le produce sunetul','Reprezentarea amplitudinilor tuturor frecventelor dintr-un sunet','Distanta pe care o parcurge un sunet','Numarul de vibratii pe secunda ale unui sunet'],correct:1,explicatie:'Spectrul sonor arata distributia energiei pe frecvente a unui sunet. Analiza Fourier descompune orice sunet complex in componentele sale sinusoidale si le reprezinta grafic ca spectru.'},
+  {id:'f9',type:'fill',text:'La cati Hz vibreaza corzile vocale ale unui tenor obisnuit in registrul mediu?',correct:'200',explicatie:'Corzile vocale ale unui tenor vibreaza in jur de 200 Hz in registrul mediu. Sopranele pot ajunge la 1000+ Hz, in timp ce basii coboara sub 100 Hz.'},
+  {id:'f10',type:'fill',text:'La cati ani a inventat Joseph Fourier analiza care ii poarta numele?',correct:'1822',explicatie:'Joseph Fourier a publicat teoria sa in 1822 in "Theorie analytique de la chaleur". Analiza Fourier sta la baza intregii procesari digitale a sunetului.'},
+  {id:'f11',type:'fill',text:'Cati Hz are sunetul produs de inima umana (bataile inimii la 60 BPM)?',correct:'1',explicatie:'La 60 BPM, inima bate o data pe secunda — adica 1 Hz, mult sub pragul auzului uman de 20 Hz. Nu il auzim direct, dar il simtim ca vibratie.'},
+  {id:'f12',type:'fill',text:'Cu cati dB se reduce intensitatea sunetului cand distanta fata de sursa se dubleaza?',correct:'6',explicatie:'Legea inversa a patratului: cand distanta se dubleaza, intensitatea scade cu 6 dB. De aceea sunetul slabeste rapid cu distanta in spatiu deschis.'},
+  {id:'t13',type:'tf',text:'Muzica in tonalitate minora suna trist in toate culturile lumii.',correct:'fals',explicatie:'Fals. Asocierea minor=trist este partial culturala. In unele culturi din Africa sau Asia, tonalitatea minora nu are aceleasi conotatii emotionale ca in cultura occidentala.'},
+  {id:'t14',type:'tf',text:'Sunetele ultrasonice pot fi folosite pentru a ghida chirurgical interventii fara a deschide corpul.',correct:'adevarat',explicatie:'Adevarat. HIFU (High Intensity Focused Ultrasound) si alte tehnici ultrasonice permit interventii chirurgicale non-invazive, inclusiv distrugerea tumorilor si tratarea tremurului esential.'},
+  {id:'t15',type:'tf',text:'Creveta pistol poate produce prin cavitatia acustica o bula cu temperatura apropiata de cea a suprafetei Soarelui.',correct:'adevarat',explicatie:'Adevarat. Creveta pistol produce prin cavitatie o bula de ~8000C — aproape cat suprafata Soarelui (5500C). Aceasta bula omoara prada instant si produce o lumina scurta vizibila.'},
+  {id:'t16',type:'tf',text:'Vibratiile infrasonice pot fi detectate de elefanti prin talpile lor.',correct:'adevarat',explicatie:'Adevarat. Elefantii detecteaza infrasunete de 14-35 Hz atat prin urechi cat si prin talpile lor, care percep vibratiile solului. Comunica astfel pe distante de zeci de kilometri.'},
+  {id:'t17',type:'tf',text:'Un studio de inregistrari profesionist reduce zgomotul interior cu aproximativ 60 dB fata de exterior.',correct:'adevarat',explicatie:'Adevarat. Un studio profesionist reduce zgomotul cu ~60 dB — o reducere de un milion de ori a intensitatii sonore. Se realizeaza prin constructie "cutie in cutie" flotanta pe arcuri de cauciuc.'},
+  {id:'u11',type:'unit',text:'Potriveste tipul de compresie audio cu caracteristica sa:',pairs:[{left:'WAV',right:'Necomprimat, calitate maxima, fisiere mari'},{left:'MP3',right:'Comprimat cu pierderi, folosit masking psihoacustic'},{left:'FLAC',right:'Comprimat fara pierderi, jumatate din WAV'},{left:'OPUS',right:'Optimizat pentru voce, folosit de WhatsApp'}],explicatie:'WAV: necomprimat | MP3: pierderi (masking) | FLAC: fara pierderi | OPUS: voce (WhatsApp, Discord).'},
+  {id:'u12',type:'unit',text:'Potriveste fenomenul fizic cu descrierea sa:',pairs:[{left:'Rezonanta',right:'Amplificare la frecventa naturala a obiectului'},{left:'Interferenta',right:'Suprapunerea a doua unde sonore'},{left:'Difractia',right:'Ocolirea obstacolelor de catre undele sonore'},{left:'Refractia',right:'Schimbarea directiei sunetului intre medii diferite'}],explicatie:'Rezonanta: amplificare la frecventa proprie | Interferenta: suprapunere | Difractia: ocolire obstacole | Refractia: schimbare directie.'},
+  {id:'u13',type:'unit',text:'Potriveste instrumentul muzical cu mecanismul sau de producere a sunetului:',pairs:[{left:'Vioara',right:'Coarde frecate cu arcus'},{left:'Trompeta',right:'Vibratia buzelor in mustituc'},{left:'Flaut',right:'Coloana de aer vibrand intr-un tub'},{left:'Toba',right:'Membrana intinsa lovita'}],explicatie:'Vioara: frecare | Trompeta: buze | Flaut: coloana de aer | Toba: membrana.'},
+  {id:'u14',type:'unit',text:'Potriveste tehnica de izolare fonica cu principiul sau:',pairs:[{left:'Masa dubla de sticla',right:'Stratul de aer rupe puntile acustice'},{left:'Mocheta si perdele',right:'Absorb sunetul, scurteaza reverberatia'},{left:'Bass traps',right:'Absorb acumularile de frecvente joase din colturi'},{left:'Difuzori acustici',right:'Imprastie sunetul uniform in incapere'}],explicatie:'Dubla sticla: aer rupe puntile | Mocheta: absorbtie | Bass traps: frecvente joase | Difuzori: imprastiere uniforma.'},
+  {id:'u15',type:'unit',text:'Potriveste descoperirea stiintifica cu domeniul sau:',pairs:[{left:'Analiza Fourier 1822',right:'Matematica — descompunere in sinusoide'},{left:'Efectul Doppler 1842',right:'Fizica — schimbare frecventa la miscare'},{left:'Stetoscop 1816',right:'Medicina — ascultarea inimii si plamanilor'},{left:'Sonar 1915',right:'Geografie/Militare — detectare subacvatica'}],explicatie:'Fourier 1822: matematica | Doppler 1842: fizica | Stetoscop 1816: medicina | Sonar 1915: geografie/militare.'}
+
+  ,{id:'n21',type:'abcd',text:'Ce este bataia acustica (beat frequency)?',options:['Un ritm muzical specific jazz-ului','Interferenta intre doua sunete cu frecvente usor diferite care produce o pulsatie','Un tip de distorsiune in amplificatoare','Frecventa specifica a instrumentelor de percutie'],correct:1,explicatie:'Cand doua sunete cu frecvente usor diferite (ex: 440 Hz si 443 Hz) se suprapun, apar batai cu frecventa egala cu diferenta lor (3 Hz). Muzicienii folosesc asta pentru a acorda instrumentele perfect.'}
+  ,{id:'n22',type:'abcd',text:'Cum functioneaza Shazam pentru a recunoaste o melodie?',options:['Compara melodia cu o baza de date de melodii in timp real','Creeaza o amprenta digitala din spectrul sonor si o compara cu milioane de amprente stocate','Asculta versurile si le cauta pe internet','Recunoaste instrumentele folosite si deduce melodia'],correct:1,explicatie:'Shazam analizeaza spectrogram-ul audio si extrage puncte caracteristice (constelatie de frecvente). Aceasta amprenta este comparata cu o baza de date de miliarde de amprente in sub o secunda.'}
+  ,{id:'t18',type:'tf',text:'Sunetul calatoreste mai repede noaptea decat ziua.',correct:'adevarat',explicatie:'Adevarat in anumite conditii. Noaptea, stratul de aer rece de la sol si cel cald de deasupra refracta sunetul inapoi spre pamant, facandu-l sa se auda la distante mai mari.'}
+  ,{id:'u16',type:'unit',text:'Potriveste aplicatia tehnologica cu principiul sonor pe care se bazeaza:',pairs:[{left:'Shazam',right:'Amprenta digitala din spectrul sonor'},{left:'Noise Cancelling',right:'Interferenta distructiva — unda cu faza inversata'},{left:'Sonar marin',right:'Reflexia undelor sonore pe obiecte subacvatice'},{left:'Ecografie medicala',right:'Reflexia ultrasunetelor pe tesuturi diferite'}],explicatie:'Shazam: amprenta spectrala | ANC: interferenta distructiva | Sonar: reflexie subacvatica | Ecografie: reflexie tesuturi.'}
+  ,{id:'f13',type:'fill',text:'Cate Hz are frecventa fundamentala a notei muzicale Do din octava 4 (Do central)?',correct:'261',explicatie:'Do central (C4) are frecventa de 261,63 Hz. Aceasta este nota de referinta de la mijlocul claviaturii pianului.'}
+  ,{id:'f14',type:'fill',text:'Cati ani avea Beethoven cand a compus Simfonia a 9-a, desi era complet surd?',correct:'54',explicatie:'Beethoven a compus Simfonia a 9-a la varsta de 54 de ani (1824), desi era complet surd. A condus premiera fara sa auda nimic — a trebuit sa fie intors catre public pentru a vedea aplauzele.'}
+
+];
+
+// Fisher-Yates — amesteca array aleatoriu
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+// Alege aleatoriu 25 din banca extinsa: 12 ABCD, 4 fill, 5 TF, 4 unit
+// alege 25 intrebari din banca: 12 grila, 4 fill, 5 TF, 4 unit (banca extinsa la 100)
+function buildQuiz(){
+  const g={abcd:[],fill:[],tf:[],unit:[]};
+  BANCA.forEach(q=>g[q.type].push(q));
+  const abcd=shuffle(g.abcd).slice(0,12);
+  const fill=shuffle(g.fill).slice(0,4);
+  const tf=shuffle(g.tf).slice(0,5);
+  const unit=shuffle(g.unit).slice(0,4);
+  return shuffle([...abcd,...fill,...tf,...unit]);
+}
+const INTREBARI = buildQuiz();
+const raspunsuri = {};
+const unitState = {};
+const LABELS = ['A','B','C','D'];
+const TYPE_LABEL = {abcd:'Variantă multiplă',fill:'Completare',tf:'Adevărat / Fals',unit:'Potrivire perechi'};
+
+// randeaza intrebarile in pagina
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  c.innerHTML='';
+  INTREBARI.forEach((q,idx)=>{
+    const div=document.createElement('div');
+    div.className='question-block';
+    div.id='qb-'+q.id;
+    let h=`<div class="question-num">Întrebarea ${idx+1} <span class="question-type-badge">${TYPE_LABEL[q.type]}</span></div><div class="question-text">${q.text}</div>`;
+    if(q.type==='abcd'){
+      const opts=shuffle(q.options.map((o,i)=>({t:o,ok:i===q.correct})));
+      h+=`<div class="options">`;
+      opts.forEach((o,i)=>{h+=`<div class="option" data-qid="${q.id}" data-ok="${o.ok}" onclick="selOpt(this)"><div class="option-letter">${LABELS[i]}</div><div class="option-text">${o.t}</div></div>`;});
+      h+=`</div>`;
+    }
+    if(q.type==='fill'){h+=`<input class="fill-input" id="fi-${q.id}" type="text" placeholder="Scrie răspunsul..." oninput="onFill('${q.id}',this.value)">`;}
+    if(q.type==='tf'){h+=`<div class="tf-options"><button class="tf-btn" data-qid="${q.id}" data-val="adevarat" onclick="selTF(this)">✓ Adevărat</button><button class="tf-btn" data-qid="${q.id}" data-val="fals" onclick="selTF(this)">✗ Fals</button></div>`;}
+    if(q.type==='unit'){
+      unitState[q.id]={sel:null,matches:{}};
+      const rightShuf=shuffle([...q.pairs]);
+      h+=`
+        <div class="unit-hint">Click pe un termen, apoi pe descrierea potrivită. Click pe o pereche bifată pentru a o anula.</div>
+        <div class="unit-container" id="uc-${q.id}">
+          <div class="unit-col">
+            <div class="unit-col-label">Termen</div>
+            <div class="unit-items" id="ul-${q.id}">`;
+      q.pairs.forEach((p,i)=>{h+=`<div class="unit-item" data-qid="${q.id}" data-side="left" data-idx="${i}" onclick="selUnit(this)">${p.left}</div>`;});
+      h+=`    </div>
+          </div>
+          <div class="unit-arrows-col" id="ua-${q.id}">
+            <div class="unit-col-label">&nbsp;</div>
+            <div id="arrows-${q.id}" class="arrows-wrap"></div>
+          </div>
+          <div class="unit-col">
+            <div class="unit-col-label">Descriere</div>
+            <div class="unit-items" id="ur-${q.id}">`;
+      rightShuf.forEach(p=>{const i=q.pairs.findIndex(op=>op.right===p.right);h+=`<div class="unit-item" data-qid="${q.id}" data-side="right" data-idx="${i}" onclick="selUnit(this)">${p.right}</div>`;});
+      h+=`    </div>
+          </div>
+        </div>`;
+    }
+    div.innerHTML=h;
+    c.appendChild(div);
+  });
+}
+
+function updProgress(){
+  const n=Object.keys(raspunsuri).length;
+  document.getElementById('progressFill').style.width=(n/25*100)+'%';
+  document.getElementById('progressLabel').textContent=`${n} / 25 răspunse`;
+}
+
+function selOpt(el){
+  const qid=el.dataset.qid;
+  document.querySelectorAll(`[data-qid="${qid}"].option`).forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  raspunsuri[qid]=el.dataset.ok==='true';
+  updProgress();
+}
+
+function selTF(el){
+  const qid=el.dataset.qid;
+  document.querySelectorAll(`[data-qid="${qid}"].tf-btn`).forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  const q=INTREBARI.find(q=>q.id===qid);
+  raspunsuri[qid]=el.dataset.val===q.correct;
+  updProgress();
+}
+
+function onFill(qid,val){
+  const q=INTREBARI.find(q=>q.id===qid);
+  raspunsuri[qid]=val.trim().toLowerCase()===q.correct.toLowerCase();
+  updProgress();
+}
+
+function selUnit(el){
+  const qid=el.dataset.qid,side=el.dataset.side,idx=parseInt(el.dataset.idx);
+  const st=unitState[qid];
+
+  // Click pe un item deja matched — debifează
+  if(el.classList.contains('matched')){
+    // Gaseste perechea
+    let leftIdx=null,rightIdx=null;
+    if(side==='left'){ leftIdx=idx; rightIdx=st.matches[idx]; }
+    else { rightIdx=idx; leftIdx=parseInt(Object.keys(st.matches).find(k=>st.matches[k]===idx)); }
+    // Sterge match
+    delete st.matches[leftIdx];
+    // Reset clase
+    const leftEl=document.querySelector(`[data-qid="${qid}"][data-side="left"][data-idx="${leftIdx}"]`);
+    const rightEl=document.querySelector(`[data-qid="${qid}"][data-side="right"][data-idx="${rightIdx}"]`);
+    if(leftEl){leftEl.classList.remove('matched');}
+    if(rightEl){rightEl.classList.remove('matched');}
+    // Sterge sageata
+    const arrow=document.getElementById(`arrow-${qid}-${leftIdx}`);
+    if(arrow)arrow.remove();
+    // Recalculeaza raspuns
+    const q=INTREBARI.find(q=>q.id===qid);
+    if(Object.keys(st.matches).length===q.pairs.length){
+      raspunsuri[qid]=Object.keys(st.matches).every(k=>parseInt(k)===st.matches[k]);
+    } else {
+      delete raspunsuri[qid];
+    }
+    updProgress();
+    return;
+  }
+
+  if(side==='left'){
+    document.querySelectorAll(`[data-qid="${qid}"][data-side="left"]`).forEach(i=>i.classList.remove('selected-left'));
+    el.classList.add('selected-left');
+    st.sel=idx;
+  } else {
+    if(st.sel===null)return;
+    const leftIdx=st.sel;
+    const rightIdx=idx;
+    st.matches[leftIdx]=rightIdx;
+
+    const leftEl=document.querySelector(`[data-qid="${qid}"][data-side="left"][data-idx="${leftIdx}"]`);
+    leftEl.classList.remove('selected-left');
+    leftEl.classList.add('matched');
+    el.classList.add('matched');
+    st.sel=null;
+
+    // Deseneaza sageata
+    drawArrow(qid, leftIdx, rightIdx, leftEl, el);
+
+    const q=INTREBARI.find(q=>q.id===qid);
+    if(Object.keys(st.matches).length===q.pairs.length){
+      raspunsuri[qid]=Object.keys(st.matches).every(k=>parseInt(k)===st.matches[k]);
+      updProgress();
+    }
+  }
+}
+
+function drawArrow(qid, leftIdx, rightIdx, leftEl, rightEl){
+  // Creaza elementul SVG
+  const container = document.getElementById('uc-'+qid);
+  const arrowsWrap = document.getElementById('arrows-'+qid);
+
+  // Pozitii relative la container
+  const cRect = arrowsWrap.getBoundingClientRect();
+  const lRect = leftEl.getBoundingClientRect();
+  const rRect = rightEl.getBoundingClientRect();
+
+  const lY = lRect.top + lRect.height/2 - cRect.top;
+  const rY = rRect.top + rRect.height/2 - cRect.top;
+
+  const arrowH = Math.max(arrowsWrap.offsetHeight, 10);
+
+  // Sterge sageata veche daca exista
+  const old = document.getElementById(`arrow-${qid}-${leftIdx}`);
+  if(old) old.remove();
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('id',`arrow-${qid}-${leftIdx}`);
+  svg.style.cssText=`position:absolute;top:0;left:0;width:100%;height:${arrowsWrap.scrollHeight}px;overflow:visible;pointer-events:none`;
+
+  const colors=['#ffaa00','#00c6ff','#ff6b9d','#a78bfa'];
+  const color=colors[leftIdx % colors.length];
+
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  const w=arrowsWrap.offsetWidth||40;
+  const x1=4, x2=w-4;
+  const y1=lY, y2=rY;
+  const cx=(x1+x2)/2;
+  path.setAttribute('d',`M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}`);
+  path.setAttribute('stroke',color);
+  path.setAttribute('stroke-width','2');
+  path.setAttribute('fill','none');
+  path.setAttribute('stroke-dasharray','5,3');
+
+  // Varful sagetii
+  const arrow=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+  arrow.setAttribute('points',`${x2},${y2} ${x2-6},${y2-4} ${x2-6},${y2+4}`);
+  arrow.setAttribute('fill',color);
+
+  svg.appendChild(path);
+  svg.appendChild(arrow);
+  arrowsWrap.style.position='relative';
+  arrowsWrap.appendChild(svg);
+}
+
+// calculeaza scorul si afiseaza rezultatul
+function submitQuiz(){
+  INTREBARI.filter(q=>q.type==='fill').forEach(q=>{
+    if(raspunsuri[q.id]===undefined){
+      const v=(document.getElementById('fi-'+q.id)?.value||'').trim().toLowerCase();
+      raspunsuri[q.id]=v===q.correct.toLowerCase();
+    }
+  });
+
+  let scor=0,greseli=[];
+  INTREBARI.forEach(q=>{
+    if(raspunsuri[q.id]===true)scor++;
+    else greseli.push(q);
+  });
+
+  const trecut=scor>=18;
+  if(trecut){window.salveazaQuiz(); setTimeout(arataCertificat, 2500);}
+  salveazaIstoric(scor);
+
+  let html=`<div class="popup-score"><div class="popup-score-num ${trecut?'pass':'fail'}">${scor}/25</div><div class="popup-score-label">puncte obținute</div><div class="popup-result-text ${trecut?'pass':'fail'}">${trecut?'🎉 Felicitări, ai trecut!':'😕 Nu ai trecut. Mai încearcă!'}</div></div><div class="popup-divider"></div>`;
+
+  if(greseli.length===0){
+    html+=`<div class="popup-no-greseli">✅ Perfect! Ai răspuns corect la toate.</div>`;
+  }else{
+    html+=`<div class="popup-greseli-title">📋 Întrebările greșite</div>`;
+    greseli.forEach(g=>{
+      let ct='';
+      if(g.type==='abcd')ct=g.options[g.correct];
+      else if(g.type==='fill')ct=g.correct;
+      else if(g.type==='tf')ct=g.correct==='adevarat'?'Adevărat':'Fals';
+      else ct=g.pairs.map(p=>`${p.left} → ${p.right}`).join(' | ');
+      html+=`<div class="greseala-item"><div class="greseala-q">${g.text.replace(/<[^>]*>/g,'')}</div><div class="greseala-corect">Răspuns corect: <span>${ct}</span></div><div class="greseala-explicatie">${g.explicatie}</div></div>`;
+    });
+  }
+
+  html+=`<div class="popup-btns"><button class="popup-btn popup-btn-secondary" onclick="location.reload()">🔄 Încearcă din nou</button>${trecut?'<button class="popup-btn popup-btn-primary" style="background:linear-gradient(135deg,#ffc600,#ff9500);color:#0f2d4a" onclick="arataCertificat()">🎓 Ia Certificatul</button>':'<button class="popup-btn popup-btn-primary" onclick="location.href=\'quiz.html\'">← Înapoi la Quiz</button>'}</div>`;
+  document.getElementById('popupContent').innerHTML=html;
+  document.getElementById('popupOverlay').classList.remove('hidden');
+}
+
+renderQuiz();
+
+const cw=document.querySelector('.content-wrap');
+let isDown=false,startY,st2;
+cw.addEventListener('mousedown',e=>{isDown=true;cw.style.cursor='grabbing';startY=e.pageY-cw.offsetTop;st2=cw.scrollTop;});
+document.addEventListener('mouseup',()=>{isDown=false;cw.style.cursor='default';});
+document.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();cw.scrollTop=st2-(e.pageY-cw.offsetTop-startY)*1.5;});
+</script>
+<script>
+// ===== MENIU HAMBURGER =====
+function toggleMobileMenu(){
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#hamburger') && !e.target.closest('#mobileMenu')){
+    var h=document.getElementById('hamburger'), m=document.getElementById('mobileMenu');
+    if(h) h.classList.remove('open');
+    if(m) m.classList.remove('open');
+  }
+});
+document.querySelectorAll('#mobileMenu a').forEach(function(a){
+  a.addEventListener('click',function(){
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileMenu').classList.remove('open');
+  });
+});
+window.addEventListener('resize',function(){
+  if(window.innerWidth>600){
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

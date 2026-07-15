@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera - Register</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+    emailjs.init('S1qnf3K4TByHTmvQo');
+</script>
+
+<style>
+html { overflow-x:hidden; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: Arial, sans-serif;
+        color: white;
+        overflow: hidden;
+        background: #0f2d4a;
+        height: 100vh;
+        width: 100vw;
+    }
+
+    /* fundal animat */
+    .wave {
+        position: fixed;
+        width: 200%; height: 200%;
+        top: -50%; left: -50%;
+        background: radial-gradient(circle at 20% 20%, #2d6494 0%, #0f2d4a 65%);
+        animation: moveWave 12s infinite linear;
+        opacity: 0.75;
+        z-index: 0;
+    }
+
+    @keyframes moveWave {
+        0% { transform: translate(0,0) scale(1); }
+        50% { transform: translate(60px, 40px) scale(1.05); }
+        100% { transform: translate(0,0) scale(1); }
+    }
+
+    /* bule */
+    .bubble {
+        position: fixed;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.25), rgba(0,198,255,0.05));
+        border: 1px solid rgba(0,198,255,0.25);
+        animation: floatUp linear infinite;
+        z-index: 1;
+    }
+
+    @keyframes floatUp {
+        0%   { transform: translateY(0) scale(1); opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 0.6; }
+        100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+    }
+
+    .bubble:nth-child(1) { width: 18px; height: 18px; left: 5%;   bottom: -20px; animation-duration: 8s;  animation-delay: 0s; }
+    .bubble:nth-child(2) { width: 10px; height: 10px; left: 12%;  bottom: -20px; animation-duration: 6s;  animation-delay: 2s; }
+    .bubble:nth-child(3) { width: 22px; height: 22px; left: 20%;  bottom: -20px; animation-duration: 10s; animation-delay: 1s; }
+    .bubble:nth-child(4) { width: 14px; height: 14px; right: 8%;  bottom: -20px; animation-duration: 7s;  animation-delay: 3s; }
+    .bubble:nth-child(5) { width: 20px; height: 20px; right: 18%; bottom: -20px; animation-duration: 9s;  animation-delay: 0.5s; }
+    .bubble:nth-child(6) { width: 10px; height: 10px; right: 5%;  bottom: -20px; animation-duration: 5s;  animation-delay: 4s; }
+
+    /* note muzicale */
+    .note {
+        position: fixed;
+        font-size: 28px;
+        animation: floatNote linear infinite;
+        z-index: 1;
+        opacity: 0;
+        color: rgba(0,198,255,0.7);
+        user-select: none;
+    }
+
+    @keyframes floatNote {
+        0%   { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+        10%  { opacity: 0.8; }
+        50%  { transform: translateY(-40vh) rotate(15deg) scale(1); opacity: 0.6; }
+        90%  { opacity: 0.2; }
+        100% { transform: translateY(-90vh) rotate(-10deg) scale(0.9); opacity: 0; }
+    }
+
+    .note:nth-child(7)  { left: 7%;   bottom: 10%; animation-duration: 9s;  animation-delay: 0s;   font-size: 24px; }
+    .note:nth-child(8)  { left: 18%;  bottom: 20%; animation-duration: 12s; animation-delay: 2s;   font-size: 32px; }
+    .note:nth-child(9)  { left: 28%;  bottom: 5%;  animation-duration: 8s;  animation-delay: 4s;   font-size: 20px; }
+    .note:nth-child(10) { right: 7%;  bottom: 15%; animation-duration: 10s; animation-delay: 1s;   font-size: 28px; }
+    .note:nth-child(11) { right: 20%; bottom: 25%; animation-duration: 11s; animation-delay: 3s;   font-size: 22px; }
+    .note:nth-child(12) { right: 30%; bottom: 8%;  animation-duration: 7s;  animation-delay: 5s;   font-size: 30px; }
+    .note:nth-child(13) { left: 40%;  bottom: 3%;  animation-duration: 13s; animation-delay: 1.5s; font-size: 18px; }
+
+    /* logo */
+    .logo {
+        position: absolute;
+        top: 5px;
+        left: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 22px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .logo img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        margin: -15px -10px -15px -10px;
+    }
+
+    .logo span { color: #0099cc; margin-top: 10px; }
+
+    /* container principal */
+    .container {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        animation: fadeIn 1.5s ease forwards;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 6px;
+        text-shadow: 0 0 30px rgba(0,198,255,0.3);
+        text-align: center;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: rgba(255,255,255,0.6);
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    /* mesaje eroare / succes */
+    .msg {
+        width: 320px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        text-align: center;
+        margin-bottom: 10px;
+        display: none;
+    }
+
+    .msg.error {
+        background: rgba(255,80,80,0.15);
+        border: 1px solid rgba(255,80,80,0.4);
+        color: #ff6b6b;
+        display: block;
+    }
+
+    .msg.success {
+        background: rgba(0,255,150,0.1);
+        border: 1px solid rgba(0,255,150,0.3);
+        color: #00ff96;
+        display: block;
+    }
+
+    /* campuri formular */
+    .form-group { width: 320px; margin-bottom: 12px; }
+
+    .form-group label {
+        display: block;
+        font-size: 12px;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 5px;
+        padding-left: 5px;
+    }
+
+    .input-wrap { position: relative; width: 100%; }
+
+    .form-group input {
+        width: 100%;
+        padding: 11px 45px 11px 18px;
+        border-radius: 30px;
+        border: 1.5px solid rgba(0,198,255,0.3);
+        background: rgba(255,255,255,0.07);
+        color: white;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .form-group input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .form-group input:focus {
+        border-color: #00c6ff;
+        background: rgba(0,198,255,0.1);
+        box-shadow: 0 0 15px rgba(0,198,255,0.2);
+    }
+
+    /* toggle parola */
+    .toggle-pw {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px;
+        user-select: none;
+        z-index: 2;
+    }
+
+    /* buton register */
+    .btn-register {
+        width: 320px;
+        padding: 12px;
+        border-radius: 30px;
+        border: none;
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0,198,255,0.4);
+        margin-top: 5px;
+    }
+
+    .btn-register:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 30px rgba(0,198,255,0.7);
+    }
+
+    /* separator */
+    .divider {
+        width: 320px;
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        gap: 10px;
+        color: rgba(255,255,255,0.4);
+        font-size: 13px;
+    }
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(255,255,255,0.2);
+    }
+
+    /* buton google */
+    .btn-google {
+        width: 320px;
+        padding: 12px;
+        border-radius: 30px;
+        border: 1.5px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.07);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-google:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: white;
+        transform: scale(1.03);
+        box-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+
+    .btn-google img { width: 20px; height: 20px; }
+
+    /* link spre login */
+    .login-link {
+        margin-top: 18px;
+        font-size: 13px;
+        color: rgba(255,255,255,0.5);
+        text-align: center;
+    }
+
+    .login-link a {
+        color: #00c6ff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .login-link a:hover { text-decoration: underline; }
+
+    /* modal username Google */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+        padding: 20px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+        background: rgba(15,45,74,0.95);
+        border: 1.5px solid rgba(0,198,255,0.3);
+        border-radius: 20px;
+        padding: 35px 30px;
+        width: 100%;
+        max-width: 360px;
+        margin: auto;
+        text-align: center;
+        box-shadow: 0 0 40px rgba(0,198,255,0.2);
+        animation: fadeIn 0.3s ease forwards;
+    }
+
+    .modal h2 { font-size: 22px; margin-bottom: 8px; }
+
+    .modal p {
+        font-size: 14px;
+        color: rgba(255,255,255,0.6);
+        margin-bottom: 20px;
+    }
+
+    .modal input {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 30px;
+        border: 1.5px solid rgba(0,198,255,0.3);
+        background: rgba(255,255,255,0.07);
+        color: white;
+        font-size: 15px;
+        outline: none;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+    }
+
+    .modal input:focus {
+        border-color: #00c6ff;
+        box-shadow: 0 0 15px rgba(0,198,255,0.2);
+    }
+
+    .modal input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .modal-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 30px;
+        border: none;
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0,198,255,0.4);
+    }
+
+    .modal-btn:hover {
+        transform: scale(1.03);
+        box-shadow: 0 6px 30px rgba(0,198,255,0.7);
+    }
+
+    /* animatie generala */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+
+    @media (max-width: 600px) {
+        .logo { top: 12px !important; }
+        .logo img { width: 60px !important; height: 60px !important; margin: -8px -8px -8px -8px !important; }
+        .logo span { font-size: 14px !important; margin-top: 4px !important; }
+        h1 { font-size: 22px !important; }
+        .subtitle { font-size: 12px !important; }
+        .form-group { width: calc(100vw - 40px) !important; }
+        .msg { width: calc(100vw - 40px) !important; }
+        .btn-login { width: calc(100vw - 40px) !important; }
+        .btn-register { width: calc(100vw - 40px) !important; }
+        .btn-google { width: calc(100vw - 40px) !important; }
+        .divider { width: calc(100vw - 40px) !important; }
+        .forgot { width: calc(100vw - 40px) !important; }
+        body { overflow-y: auto; overflow-x: hidden; }
+        .container { justify-content: flex-start; padding-top: 100px; }
+        .modal { padding: 28px 22px !important; }
+        .modal h2 { font-size: 19px !important; }
+        .modal p { font-size: 13px !important; }
+    }
+
+</style>
+</head>
+
+<body>
+
+<!-- fundal -->
+<div class="wave"></div>
+
+<!-- bule -->
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+
+<!-- note muzicale -->
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+<div class="note">♬</div>
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+
+<!-- logo -->
+<a href="index.html" class="logo">
+    <img src="assets/images/Logo.png" alt="logo">
+    <span>Soundvera</span>
+</a>
+
+<!-- formular register -->
+<div class="container">
+    <h1>Creează cont</h1>
+    <div class="subtitle">Alătură-te comunității Soundvera</div>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="form-group">
+        <label>Nume utilizator</label>
+        <div class="input-wrap">
+            <input type="text" id="username" placeholder="ex: Gica">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <div class="input-wrap">
+            <input type="email" id="email" placeholder="ex: gicapopa@email.com">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Parolă</label>
+        <div class="input-wrap">
+            <input type="password" id="password" placeholder="Minim 8 caractere">
+            <span class="toggle-pw" id="togglePassword">👁️</span>
+        </div>
+    </div>
+
+    <button class="btn-register" id="btnRegister">Înregistrează-te</button>
+
+    <div class="divider">sau</div>
+
+    <!-- login cu google -->
+    <button class="btn-google" id="btnGoogle">
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+        Continuă cu Google
+    </button>
+
+    <div class="login-link">
+        Ai deja cont? <a href="login.html">Conectează-te</a>
+    </div>
+</div>
+
+<!-- modal username pentru google -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h2>Un ultim pas!</h2>
+        <p>Alege un nume de utilizator pentru contul tău Google</p>
+        <input type="text" id="googleUsername" placeholder="Nume utilizator">
+        <div id="modalMsg" class="msg"></div>
+        <button class="modal-btn" id="modalBtn">Finalizează înregistrarea</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // initializare firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQe0VLbBbRi7l8AkDxx30jL0DfnJSlpeM",
+        authDomain: "soundvera-66452.firebaseapp.com",
+        projectId: "soundvera-66452",
+        storageBucket: "soundvera-66452.firebasestorage.app",
+        messagingSenderId: "255538443530",
+        appId: "1:255538443530:web:018577a62aafddf45776f3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // trimite email de bun venit prin EmailJS
+    function trimiteEmailBunVenit(name, email) {
+        emailjs.send('service_qtxpl6a', 'template_rchetew', {
+            name: name,
+            email: email
+        }).catch(err => console.warn('EmailJS error:', err));
+    }
+
+    // toggle vizibilitate parola
+    document.getElementById('togglePassword').addEventListener('click', () => {
+        const input = document.getElementById('password');
+        const toggle = document.getElementById('togglePassword');
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggle.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            toggle.textContent = '👁️';
+        }
+    });
+
+    // afiseaza mesaj eroare sau succes
+    function showMsg(id, text, type) {
+        const el = document.getElementById(id);
+        el.textContent = text;
+        el.className = 'msg ' + type;
+    }
+
+    // verifica daca username-ul exista deja
+    async function usernameExista(username) {
+        const q = query(collection(db, 'users'), where('username', '==', username));
+        const snapshot = await getDocs(q);
+        return !snapshot.empty;
+    }
+
+    // register cu email si parola
+    document.getElementById('btnRegister').addEventListener('click', async () => {
+        const username = document.getElementById('username').value.trim();
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        // validari
+        if (!username || !email || !password) {
+            showMsg('msg', 'Completează toate câmpurile!', 'error');
+            return;
+        }
+
+        if (password.length < 8) {
+            showMsg('msg', 'Parola trebuie să aibă minim 8 caractere!', 'error');
+            return;
+        }
+
+        try {
+            const exista = await usernameExista(username);
+            if (exista) {
+                showMsg('msg', 'Numele de utilizator este deja folosit!', 'error');
+                return;
+            }
+
+            // creaza contul in Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // seteaza numele
+            await updateProfile(user, { displayName: username });
+
+            // salveaza in Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                username: username,
+                email: email,
+                createdAt: new Date()
+            });
+
+            // trimite email de bun venit
+            trimiteEmailBunVenit(username, email);
+
+            showMsg('msg', 'Cont creat cu succes! Redirecționare...', 'success');
+            setTimeout(() => window.location.href = 'home.html', 1500);
+
+        } catch (error) {
+            if (error.code === 'auth/email-already-in-use') {
+                showMsg('msg', 'Emailul este deja folosit!', 'error');
+            } else if (error.code === 'auth/invalid-email') {
+                showMsg('msg', 'Emailul nu este valid!', 'error');
+            } else {
+                showMsg('msg', 'Eroare: ' + error.message, 'error');
+            }
+        }
+    });
+
+    // register cu Google
+    let googleUser = null;
+
+    document.getElementById('btnGoogle').addEventListener('click', async () => {
+        const provider = new GoogleAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider);
+            googleUser = result.user;
+            // deschide modal pentru username
+            document.getElementById('modalOverlay').classList.add('active');
+        } catch (error) {
+            showMsg('msg', 'Eroare Google: ' + error.message, 'error');
+        }
+    });
+
+    // finalizeaza register Google
+    document.getElementById('modalBtn').addEventListener('click', async () => {
+        const username = document.getElementById('googleUsername').value.trim();
+
+        if (!username) {
+            showMsg('modalMsg', 'Introdu un nume de utilizator!', 'error');
+            return;
+        }
+
+        try {
+            const exista = await usernameExista(username);
+            if (exista) {
+                showMsg('modalMsg', 'Numele de utilizator este deja folosit!', 'error');
+                return;
+            }
+
+            await updateProfile(googleUser, { displayName: username });
+
+            // salveaza in Firestore
+            await setDoc(doc(db, 'users', googleUser.uid), {
+                username: username,
+                email: googleUser.email,
+                createdAt: new Date()
+            });
+
+            // trimite email de bun venit
+            trimiteEmailBunVenit(username, googleUser.email);
+
+            document.getElementById('modalOverlay').classList.remove('active');
+            window.location.href = 'home.html';
+
+        } catch (error) {
+            showMsg('modalMsg', 'Eroare: ' + error.message, 'error');
+        }
+    });
+</script>
+
+</body>
+</html>

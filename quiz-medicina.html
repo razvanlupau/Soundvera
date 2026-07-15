@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera - Quiz Medicină</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+<style>
+html { overflow-x:hidden; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { overflow:hidden; height:100%; width:100%; }
+:root { --bg:#0f2d4a; --accent:#00c6ff; --accent2:#0072ff; --surface:rgba(255,255,255,0.04); --border:rgba(0,198,255,0.18); --muted:rgba(255,255,255,0.5); --green:#00ff88; --red:#ff4466; }
+body { font-family:Arial,sans-serif; color:white; background:var(--bg); }
+.wave{position:fixed;width:200%;height:200%;top:-50%;left:-50%;background:radial-gradient(circle at 20% 20%,#2d6494 0%,#0f2d4a 65%);animation:moveWave 14s infinite linear;opacity:0.7;z-index:0}
+@keyframes moveWave{0%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
+.bubble{position:fixed;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.2),rgba(0,198,255,0.04));border:1px solid rgba(0,198,255,0.2);animation:floatUp linear infinite;z-index:1}
+@keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:1}90%{opacity:0.5}100%{transform:translateY(-110vh) scale(1.1);opacity:0}}
+.bubble:nth-child(1){width:18px;height:18px;left:5%;bottom:-20px;animation-duration:8s}
+.bubble:nth-child(2){width:10px;height:10px;left:12%;bottom:-20px;animation-duration:6s}
+.bubble:nth-child(3){width:22px;height:22px;left:20%;bottom:-20px;animation-duration:10s}
+.bubble:nth-child(4){width:14px;height:14px;right:8%;bottom:-20px;animation-duration:7s}
+.bubble:nth-child(5){width:20px;height:20px;right:18%;bottom:-20px;animation-duration:9s}
+.bubble:nth-child(6){width:10px;height:10px;right:5%;bottom:-20px;animation-duration:5s}
+.note{position:fixed;font-size:26px;animation:floatNote linear infinite;opacity:0;color:rgba(0,198,255,0.5);user-select:none;z-index:1}
+@keyframes floatNote{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:0.7}90%{opacity:0.15}100%{transform:translateY(-90vh) rotate(-10deg);opacity:0}}
+.note:nth-child(7){left:7%;bottom:10%;animation-duration:9s;font-size:22px}
+.note:nth-child(8){left:18%;bottom:20%;animation-duration:12s;animation-delay:2s;font-size:30px}
+.note:nth-child(9){left:28%;bottom:5%;animation-duration:8s;animation-delay:4s;font-size:18px}
+.note:nth-child(10){right:7%;bottom:15%;animation-duration:10s;animation-delay:1s;font-size:26px}
+.note:nth-child(11){right:20%;bottom:25%;animation-duration:11s;animation-delay:3s;font-size:20px}
+.note:nth-child(12){right:30%;bottom:8%;animation-duration:7s;animation-delay:5s;font-size:28px}
+.note:nth-child(13){left:40%;bottom:3%;animation-duration:13s;animation-delay:1.5s;font-size:16px}
+.navbar{position:fixed;top:0;left:0;width:100%;height:105px;display:flex;align-items:center;padding:0 25px;z-index:100;border-bottom:1px solid rgba(0,198,255,0.2)}
+.logo{position:absolute;top:5px;left:0;z-index:10;display:flex;align-items:center;gap:2px;font-size:22px;font-weight:bold;text-decoration:none;color:white}
+.logo img{width:120px;height:120px;object-fit:contain;margin:-15px -10px -15px -10px}
+.logo span{color:#0099cc;margin-top:10px}
+.nav-links{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,0.75);padding:8px 16px;border-radius:30px;transition:0.3s}
+.nav-links a:hover{color:white;background:rgba(0,198,255,0.15)}
+.nav-links .active{color:#00c6ff;background:rgba(0,198,255,0.15)}
+.dropdown{position:relative}
+.dropdown .cont{background:linear-gradient(135deg,#00c6ff,#0072ff);color:white;font-weight:bold;box-shadow:0 4px 15px rgba(0,198,255,0.3);cursor:pointer;display:flex;align-items:center;gap:8px}
+.dropdown .cont:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,198,255,0.5)}
+.nav-avatar{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,0.4);background:linear-gradient(135deg,#00c6ff,#0072ff);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;flex-shrink:0;overflow:hidden}
+.nav-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.dropdown-menu{display:none;position:absolute;top:110%;right:0;background:rgba(15,45,74,0.97);border:1.5px solid rgba(0,198,255,0.25);border-radius:12px;overflow:hidden;min-width:210px;box-shadow:0 8px 30px rgba(0,0,0,0.4);backdrop-filter:blur(10px);z-index:200}
+.dropdown-menu.active{display:block}
+.dropdown-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.dropdown-avatar{width:35px;height:35px;border-radius:50%;background:linear-gradient(135deg,#00c6ff,#0072ff);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;flex-shrink:0;overflow:hidden}
+.dropdown-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+#dropUsername{font-size:14px;font-weight:bold;color:white}
+.dropdown-menu a{display:block;padding:13px 18px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:14px;transition:0.2s;background:none}
+.dropdown-menu a:hover{background:rgba(0,198,255,0.15);color:white}
+.dropdown-menu a.logout{color:#ff6b6b;border-top:1px solid rgba(255,255,255,0.08)}
+.dropdown-menu a.logout:hover{background:rgba(255,80,80,0.15)}
+.content-wrap{position:fixed;top:105px;left:0;width:100%;height:calc(100vh - 105px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;z-index:5}
+.content-wrap::-webkit-scrollbar{display:none}
+.page{max-width:700px;margin:0 auto;padding:40px 24px 80px}
+.quiz-header{text-align:center;margin-bottom:32px}
+.quiz-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,198,255,0.1);border:1px solid rgba(0,198,255,0.3);border-radius:30px;padding:5px 16px;font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.quiz-title{font-size:28px;font-weight:bold;margin-bottom:6px;text-shadow:0 0 20px rgba(0,198,255,0.3)}
+.quiz-title span{color:var(--accent)}
+.quiz-sub{font-size:13px;color:var(--muted)}
+.q-progress{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.q-progress-label{font-size:12px;color:var(--muted);white-space:nowrap}
+.q-progress-bar{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.q-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width 0.4s ease}
+.question-block{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px}
+.question-num{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.question-type-badge{display:inline-block;font-size:10px;padding:2px 10px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);margin-left:8px}
+.question-text{font-size:16px;font-weight:bold;line-height:1.5;margin-bottom:20px}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;cursor:pointer;transition:0.25s;user-select:none}
+.option:hover{background:rgba(0,198,255,0.08);border-color:rgba(0,198,255,0.35)}
+.option.selected{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.45)}
+.option-letter{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;flex-shrink:0;transition:0.25s}
+.option.selected .option-letter{background:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.85);color:#0f2d4a}
+.option-text{font-size:14px}
+.tf-options{display:flex;gap:12px}
+.tf-btn{flex:1;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:white;font-size:15px;font-weight:bold;cursor:pointer;transition:0.25s}
+.tf-btn:hover{background:rgba(0,198,255,0.08);border-color:rgba(0,198,255,0.35)}
+.tf-btn.selected{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.45)}
+.fill-input{width:100%;padding:12px 18px;border-radius:12px;border:1px solid rgba(0,198,255,0.25);background:rgba(255,255,255,0.05);color:white;font-size:15px;outline:none;transition:0.3s}
+.fill-input:focus{border-color:var(--accent);background:rgba(0,198,255,0.08);box-shadow:0 0 12px rgba(0,198,255,0.15)}
+.fill-input::placeholder{color:rgba(255,255,255,0.25)}
+.unit-hint{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:14px;font-style:italic}
+.unit-container{display:grid;grid-template-columns:1fr 50px 1fr;gap:8px}
+.unit-col{display:flex;flex-direction:column}
+.unit-arrows-col{display:flex;flex-direction:column}
+.arrows-wrap{flex:1;position:relative;min-height:20px}
+.unit-col-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;height:20px}
+.unit-items{display:flex;flex-direction:column;gap:8px}
+.unit-item{padding:12px 16px;border-radius:10px;border:2px dashed rgba(255,255,255,0.15);background:rgba(255,255,255,0.03);font-size:13px;cursor:pointer;transition:0.25s;user-select:none;line-height:1.4;text-align:center}
+.unit-item:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.4);border-style:dashed}
+.unit-item.selected-left{background:rgba(255,165,0,0.12);border-color:rgba(255,165,0,0.7);border-style:solid;color:#ffaa00;font-weight:bold}
+.unit-item.matched{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.25);border-style:solid;color:rgba(255,255,255,0.45);cursor:pointer}
+.unit-item.matched:hover{background:rgba(255,80,80,0.08);border-color:rgba(255,80,80,0.4);color:rgba(255,100,100,0.7)}
+.btn-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:15px;font-weight:bold;border:none;border-radius:50px;cursor:pointer;transition:0.3s;box-shadow:0 4px 20px rgba(0,198,255,0.35);margin-top:12px}
+.btn-submit:hover{transform:scale(1.02);box-shadow:0 6px 28px rgba(0,198,255,0.55)}
+.popup-overlay{position:fixed;inset:0;background:rgba(7,20,35,0.8);backdrop-filter:blur(5px);z-index:999;display:flex;align-items:center;justify-content:center}
+.popup-overlay.hidden{display:none}
+.popup{background:linear-gradient(135deg,rgba(15,45,74,0.99),rgba(10,30,55,0.99));border:1.5px solid rgba(0,198,255,0.3);border-radius:22px;padding:36px 32px;max-width:520px;width:90%;max-height:85vh;overflow-y:auto;scrollbar-width:none;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards}
+.popup::-webkit-scrollbar{display:none}
+@keyframes popIn{from{opacity:0;transform:scale(0.9) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.popup-score{text-align:center;margin-bottom:24px}
+.popup-score-num{font-size:56px;font-weight:bold;line-height:1}
+.popup-score-num.pass{color:var(--green)}
+.popup-score-num.fail{color:var(--red)}
+.popup-score-label{font-size:14px;color:var(--muted);margin-top:4px}
+.popup-result-text{font-size:18px;font-weight:bold;margin-top:8px}
+.popup-result-text.pass{color:var(--green)}
+.popup-result-text.fail{color:var(--red)}
+.popup-divider{height:1px;background:rgba(0,198,255,0.15);margin:20px 0}
+.popup-greseli-title{font-size:13px;font-weight:bold;color:rgba(255,255,255,0.7);margin-bottom:14px;letter-spacing:1px;text-transform:uppercase}
+.greseala-item{background:rgba(255,68,102,0.07);border:1px solid rgba(255,68,102,0.2);border-radius:14px;padding:16px;margin-bottom:12px}
+.greseala-q{font-size:13px;font-weight:bold;margin-bottom:8px;color:white}
+.greseala-corect{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px}
+.greseala-corect span{color:var(--green)}
+.greseala-explicatie{font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.7;background:rgba(0,198,255,0.05);border-left:2px solid rgba(0,198,255,0.3);padding:10px 12px;border-radius:0 8px 8px 0}
+.popup-no-greseli{text-align:center;padding:16px;font-size:14px;color:var(--green)}
+.popup-btns{display:flex;gap:10px;margin-top:20px}
+.popup-btn{flex:1;padding:12px;border-radius:50px;border:none;font-size:14px;font-weight:bold;cursor:pointer;transition:0.3s}
+.popup-btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.popup-btn-primary:hover{transform:scale(1.02)}
+.popup-btn-secondary{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:white}
+.popup-btn-secondary:hover{background:rgba(255,255,255,0.12)}
+
+.hist-btn{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:50;background:rgba(15,45,74,0.92);border:1px solid rgba(0,198,255,0.25);border-radius:12px;padding:12px 14px;cursor:pointer;transition:0.3s;color:white;font-size:12px;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:4px;backdrop-filter:blur(10px)}
+.hist-btn:hover{background:rgba(0,198,255,0.12);border-color:rgba(0,198,255,0.5)}
+.hist-btn-icon{font-size:20px}
+.hist-overlay{position:fixed;inset:0;background:rgba(7,20,35,0.75);backdrop-filter:blur(4px);z-index:998;display:flex;align-items:center;justify-content:center}
+.hist-overlay.hidden{display:none}
+.hist-popup{background:linear-gradient(135deg,rgba(15,45,74,0.99),rgba(10,30,55,0.99));border:1.5px solid rgba(0,198,255,0.3);border-radius:20px;padding:28px 24px;width:320px;max-height:70vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.hist-popup-title{font-size:15px;font-weight:bold;margin-bottom:16px;text-align:center}
+.hist-popup-title span{color:#00c6ff}
+.hist-list{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px;scrollbar-width:none}
+.hist-list::-webkit-scrollbar{display:none}
+.hist-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.hist-item.pass{border-color:rgba(0,255,136,0.3);background:rgba(0,255,136,0.04)}
+.hist-item.fail{border-color:rgba(255,68,102,0.3);background:rgba(255,68,102,0.04)}
+.hist-score{font-size:20px;font-weight:bold}
+.hist-item.pass .hist-score{color:#00ff88}
+.hist-item.fail .hist-score{color:#ff4466}
+.hist-meta{font-size:11px;color:rgba(255,255,255,0.4);text-align:right}
+.hist-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:bold}
+.hist-badge.pass{background:rgba(0,255,136,0.15);color:#00ff88}
+.hist-badge.fail{background:rgba(255,68,102,0.15);color:#ff4466}
+.hist-empty{text-align:center;color:rgba(255,255,255,0.3);font-size:13px;padding:20px 0}
+.hist-close-btn{margin-top:16px;width:100%;padding:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:30px;color:white;font-size:13px;cursor:pointer;transition:0.2s}
+.hist-close-btn:hover{background:rgba(255,255,255,0.13)}
+
+/* ===== HAMBURGER ===== */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;margin-left:auto;z-index:9999;position:relative}
+.hamburger span{display:block;width:24px;height:2px;background:white;border-radius:2px;transition:0.3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* ===== MENIU MOBIL ===== */
+.mobile-menu{display:none;position:fixed;top:80px;left:0;width:100%;height:calc(100vh - 80px);background:rgba(10,25,45,0.98);z-index:9999;flex-direction:column;padding:10px 0;backdrop-filter:blur(10px);overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:14px 24px;color:rgba(255,255,255,0.85);text-decoration:none;font-size:15px;border-bottom:1px solid rgba(255,255,255,0.05);transition:0.2s}
+.mobile-menu a:hover{background:rgba(0,198,255,0.1);color:white}
+.mobile-menu a.active{color:#00c6ff}
+.mobile-menu a.logout-mob{color:#ff6b6b}
+
+/* Popup-urile trebuie sa fie DEASUPRA hamburgerului (9999), altfel acesta apare peste ele.
+   Se pot si derula, altfel lista de greseli se taie pe ecran mic. */
+.popup-overlay{z-index:10001 !important;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.popup{margin:auto}
+.hist-overlay{z-index:10000 !important;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.hist-popup{margin:auto}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 600px){
+  .nav-links{display:none !important}
+  .hamburger{display:flex !important}
+  .navbar{height:80px !important;padding:0 16px !important}
+  .logo{top:12px !important;font-size:14px !important}
+  .logo img{width:60px !important;height:60px !important;margin:-8px !important}
+  .logo span{margin-top:4px !important}
+
+  .content-wrap{top:80px !important;height:calc(100vh - 80px) !important}
+  .page{padding:26px 14px 90px !important}
+
+  .quiz-title{font-size:22px !important}
+  .quiz-sub{font-size:12px !important}
+  .quiz-badge{font-size:10px !important;padding:4px 12px !important}
+
+  /* bara de progres pe doua randuri */
+  .q-progress{flex-direction:column !important;align-items:stretch !important;gap:6px !important}
+  .q-progress-label{text-align:center}
+
+  .question-block{padding:18px 14px !important;border-radius:16px !important}
+  .question-text{font-size:15px !important}
+  .option{padding:11px 12px !important;gap:10px !important;align-items:flex-start !important}
+  .option-text{font-size:13px !important;line-height:1.45}
+  .option-letter{margin-top:1px}
+  .tf-btn{padding:12px !important;font-size:14px !important}
+
+  /* exercitiul de potrivire: coloana din mijloc (sagetile) e prea ingusta pe telefon */
+  .unit-container{grid-template-columns:1fr 26px 1fr !important;gap:6px !important}
+  .unit-item{padding:10px 8px !important;font-size:11px !important}
+  .unit-col-label{font-size:9px !important;letter-spacing:1px !important}
+
+  .fill-input{font-size:14px !important;padding:11px 14px !important}
+  .btn-submit{font-size:14px !important;padding:13px !important}
+
+  /* ---- POPUP REZULTAT (scor + greseli) ---- */
+  .popup{
+    width:100% !important;
+    max-width:100% !important;
+    max-height:none !important;
+    padding:24px 18px !important;
+    border-radius:18px !important;
+  }
+  .popup-score-num{font-size:42px !important}
+  .popup-score-label{font-size:12px !important}
+  .popup-result-text{font-size:16px !important}
+  .popup-greseli-title{font-size:11px !important}
+  .greseala-item{padding:13px 12px !important;border-radius:12px !important}
+  .greseala-q{font-size:12.5px !important;line-height:1.45}
+  .greseala-corect{font-size:11.5px !important}
+  .greseala-explicatie{font-size:11.5px !important;padding:9px 10px !important;line-height:1.6 !important}
+  /* cele 2 butoane nu incap unul langa altul -> unul sub altul */
+  .popup-btns{flex-direction:column !important;gap:8px !important}
+  .popup-btn{width:100% !important;padding:13px !important}
+
+  /* ---- POPUP ISTORIC ---- */
+  .hist-popup{
+    width:100% !important;
+    max-width:400px !important;
+    max-height:80vh !important;
+    padding:22px 16px !important;
+  }
+  .hist-item{padding:10px 12px !important}
+  .hist-score{font-size:18px !important}
+  .hist-meta{font-size:10px !important}
+
+  /* butonul de istoric coboara jos-dreapta, ca sa nu acopere raspunsurile */
+  .hist-btn{
+    top:auto !important;
+    bottom:20px !important;
+    right:16px !important;
+    transform:none !important;
+    flex-direction:row !important;
+    gap:5px !important;
+    padding:10px 14px !important;
+    border-radius:30px !important;
+    font-size:11px !important;
+    box-shadow:0 6px 20px rgba(0,0,0,0.35);
+  }
+  /* "Istoricul / tau" pe doua randuri -> pe unul singur */
+  .hist-btn span:last-child{display:none}
+}
+
+@media (max-width: 380px){
+  .quiz-title{font-size:19px !important}
+  .popup-score-num{font-size:36px !important}
+  .unit-item{font-size:10px !important;padding:9px 6px !important}
+}
+</style>
+</head>
+<body>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,doc,setDoc,arrayUnion}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyBQe0VLbBbRi7l8AkDxx30jL0DfnJSlpeM",authDomain:"soundvera-66452.firebaseapp.com",projectId:"soundvera-66452",storageBucket:"soundvera-66452.firebasestorage.app",messagingSenderId:"255538443530",appId:"1:255538443530:web:018577a62aafddf45776f3"});
+const auth=getAuth(app);const db=getFirestore(app);window._cu=null;
+// verifica autentificarea
+onAuthStateChanged(auth,user=>{
+  if(!user){window.location.href='index.html';return;}
+  window._cu=user;
+  const s=localStorage.getItem('avatar_'+user.uid),l=(user.displayName||'?')[0].toUpperCase();
+  const na=document.getElementById('navAvatar'),da=document.getElementById('dropAvatar');
+  if(s){na.innerHTML=`<img src="${s}">`;da.innerHTML=`<img src="${s}">`;}else{na.textContent=l;da.textContent=l;}
+  document.getElementById('dropUsername').textContent=user.displayName||'N/A';
+});
+document.getElementById('contBtn').addEventListener('click',e=>{e.preventDefault();document.getElementById('dropdownMenu').classList.toggle('active');});
+document.addEventListener('click',e=>{if(!e.target.closest('.dropdown'))document.getElementById('dropdownMenu').classList.remove('active');});
+// logout
+document.getElementById('logoutBtn').addEventListener('click',async e=>{e.preventDefault();await signOut(auth);window.location.href='index.html';});
+// salveaza domeniul completat in Firestore
+window.salveazaQuiz=async()=>{
+  if(!window._cu)return;
+  try{await setDoc(doc(db,'quizProgress',window._cu.uid),{completate:arrayUnion('medicina')},{merge:true});}catch(e){console.warn(e);}
+};
+</script>
+
+<!-- fundal -->
+<div class="wave"></div>
+<!-- bule -->
+<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+<!-- note muzicale -->
+<div class="note">♩</div><div class="note">♪</div><div class="note">♫</div>
+<div class="note">♬</div><div class="note">♩</div><div class="note">♪</div><div class="note">♫</div>
+
+<!-- navbar -->
+<nav class="navbar">
+  <a href="home.html" class="logo"><img src="assets/images/Logo.png" alt="logo"><span>Soundvera</span></a>
+  <div class="nav-links">
+    <a href="home.html">🏠 Home</a><a href="sunete.html">🔊 Sunete</a>
+    <a href="teorie.html">📖 Teorie</a><a href="quiz.html" class="active">🧠 Quiz</a>
+    <a href="joc.html">🎮 Joc</a><a href="contact.html">📩 Contact</a>
+    <div class="dropdown">
+      <a href="#" class="cont" id="contBtn"><div class="nav-avatar" id="navAvatar">?</div>Cont</a>
+      <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-header"><div class="dropdown-avatar" id="dropAvatar">?</div><span id="dropUsername">Se încarcă...</span></div>
+        <a href="cont.html">⚙️ Setări cont</a><a href="achievements.html">🏆 Achievements</a>
+        <a href="#" class="logout" id="logoutBtn">🚪 Log out</a>
+      </div>
+    </div>
+  </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+</nav>
+<!-- meniu mobil -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="home.html">🏠 Home</a>
+  <a href="sunete.html">🔊 Sunete</a>
+  <a href="teorie.html">📖 Teorie</a>
+  <a href="quiz.html" class="active">🧠 Quiz</a>
+  <a href="joc.html">🎮 Joc</a>
+  <a href="contact.html">📩 Contact</a>
+  <a href="cont.html">⚙️ Setări cont</a>
+  <a href="achievements.html">🏆 Achievements</a>
+  <a href="#" class="logout-mob" id="logoutBtnMob">🚪 Log out</a>
+</div>
+
+<!-- buton istoric -->
+<button class="hist-btn" onclick="deschideIstoric()">
+  <span class="hist-btn-icon">📋</span>
+  <span>Istoricul</span>
+  <span>tau</span>
+</button>
+<!-- popup istoric -->
+<div class="hist-overlay hidden" id="histOverlay" onclick="if(event.target===this)inchideIstoric()">
+  <div class="hist-popup">
+    <div class="hist-popup-title">📋 Istoric — <span>Medicină</span></div>
+    <div class="hist-list" id="histList"></div>
+    <button class="hist-close-btn" onclick="inchideIstoric()">Inchide</button>
+  </div>
+</div>
+
+<!-- continut quiz -->
+<div class="content-wrap">
+<div class="page">
+  <div class="quiz-header">
+    <div class="quiz-badge">🏥 Medicină</div>
+    <div class="quiz-title">Quiz <span>Medicină</span></div>
+    <div class="quiz-sub">10 întrebări · Minim 7/10 pentru a trece</div>
+  </div>
+  <div class="q-progress">
+    <div class="q-progress-label" id="progressLabel">0 / 10 răspunse</div>
+    <div class="q-progress-bar"><div class="q-progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+  <div id="quizContainer"></div>
+  <button class="btn-submit" onclick="submitQuiz()">Verifică răspunsurile</button>
+</div>
+</div>
+
+<div class="popup-overlay hidden" id="popupOverlay">
+  <div class="popup" id="popupContent"></div>
+</div>
+
+<script>
+// banca de intrebari
+const BANCA = [
+  {id:'q1',type:'abcd',text:'La ce frecvențe lucrează ultrasunetele folosite în ecografia medicală?',options:['20–200 Hz','2–18 MHz','100–500 kHz','0,1–1 Hz'],correct:1,explicatie:'Ecografia medicală folosește unde ultrasonice cu frecvențe de 2–18 MHz — mult prea înalte pentru urechea umană. Acestea traversează corpul și se reflectă diferit în funcție de tipul de țesut.'},
+  {id:'q2',type:'abcd',text:'Cine a inventat stetoscopul și în ce an?',options:['William Harvey, 1628','René Laennec, 1816','Louis Pasteur, 1865','Joseph Lister, 1867'],correct:1,explicatie:'René Laennec a inventat stetoscopul în 1816, din jenă de a pune urechea direct pe pieptul pacienților. A rulat foi de hârtie și a descoperit că sunetul se amplifică prin tubul improvizat.'},
+  {id:'q3',type:'abcd',text:'Ce procedură medicală distruge pietrele la rinichi folosind unde de șoc fără operație?',options:['HIFU','Ecocardiografie','Litotripsie extracorporală (ESWL)','Sonoporare'],correct:2,explicatie:'Litotrisia extracorporală cu unde de șoc (ESWL) folosește unde de șoc ultrasonice focalizate pe piatră pentru a o dezintegra în bucăți mici, eliminate natural. Fără incizie, fără anestezie generală.'},
+  {id:'q4',type:'abcd',text:'Ce reprezintă sunetul "Lub-Dub" al inimii?',options:['Sângele trecând prin valve','Închiderea succesivă a valvelor cardiace','Contracția și relaxarea miocardului','Suflul sanguin în aortă'],correct:1,explicatie:'"Lub" = închiderea valvelor mitrale și tricuspide. "Dub" = închiderea valvelor aortice și pulmonare. Un cardiolog antrenat poate detecta zeci de patologii ascultând aceste sunete de 20–500 Hz.'},
+  {id:'q5',type:'fill',text:'La câte săptămâni de sarcină sunt urechile fătului suficient de dezvoltate pentru a auzi sunete din exterior?',correct:'18',explicatie:'La 18 săptămâni de sarcină, urechile fătului sunt suficient de dezvoltate pentru a percepe sunete din exterior. Expunerea la muzică clasică în uter poate stimula dezvoltarea neurologică.'},
+  {id:'q6',type:'fill',text:'Câte mii de persoane din lume trăiesc cu un implant cohlear?',correct:'700',explicatie:'Peste 700.000 de persoane din lume trăiesc cu implant cohlear — un dispozitiv care convertește sunetele în semnale electrice direct pe nervul auditiv, ocolind celulele ciliare deteriorate.'},
+  {id:'q7',type:'tf',text:'HIFU (High Intensity Focused Ultrasound) poate distruge tumori fără incizie chirurgicală.',correct:'adevarat',explicatie:'Adevărat. HIFU focalizează ultrasunete pe o tumoră, ridicând temperatura local la 65–85°C în câteva secunde. Celulele canceroase se distrug termic fără incizie, fără radiații.'},
+  {id:'q8',type:'tf',text:'Pneumonia și astmul produc aceleași sunete pulmonare la auscultare cu stetoscopul.',correct:'fals',explicatie:'Fals. Pneumonia produce sunete de crepitație (ca mersul pe zăpadă), astmul produce șuierături, iar plămânii sănătoși sună vântos și clar. Fiecare boală are o semnătură sonoră proprie.'},
+  {id:'q9',type:'unit',text:'Potrivește tehnica medicală cu principiul său sonor:',pairs:[{left:'Ecografie',right:'Ultrasunete 2–18 MHz reflectate de țesuturi'},{left:'ESWL',right:'Unde de șoc ultrasonice dezintegrează pietre'},{left:'HIFU',right:'Ultrasunete focalizate ridică temperatura la 65–85°C'},{left:'Implant cohlear',right:'Semnale electrice direct pe nervul auditiv'}],explicatie:'Ecografie: reflexia ultrasunetelor | ESWL: dezintegrare pietre | HIFU: distrugere termică | Implant cohlear: bypass celule ciliare.'},
+  {id:'q10',type:'unit',text:'Potrivește sunetul medical cu sursa sa:',pairs:[{left:'"Lub" (primul zgomot cardiac)',right:'Închiderea valvelor mitrale și tricuspide'},{left:'"Dub" (al doilea zgomot cardiac)',right:'Închiderea valvelor aortice și pulmonare'},{left:'Crepitație pulmonară',right:'Semn sonor al pneumoniei'},{left:'Șuierat pulmonar',right:'Semn sonor al astmului bronșic'}],explicatie:'"Lub": valve mitrale + tricuspide | "Dub": valve aortice + pulmonare | Crepitație: pneumonie | Șuierat: astm.'}
+];
+
+// Fisher-Yates — amesteca array aleatoriu
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+// Separa tipuri, amesteca fiecare grup, combina si amesteca din nou ordinea
+// construieste quiz-ul din banca
+function buildQuiz(){
+  const g={abcd:[],fill:[],tf:[],unit:[]};
+  BANCA.forEach(q=>g[q.type].push(q));
+  return shuffle([...shuffle(g.abcd),...shuffle(g.fill),...shuffle(g.tf),...shuffle(g.unit)]);
+}
+
+const INTREBARI = buildQuiz();
+const raspunsuri = {};
+const unitState = {};
+const LABELS = ['A','B','C','D'];
+const TYPE_LABEL = {abcd:'Variantă multiplă',fill:'Completare',tf:'Adevărat / Fals',unit:'Potrivire perechi'};
+
+// randeaza intrebarile in pagina
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  c.innerHTML='';
+  INTREBARI.forEach((q,idx)=>{
+    const div=document.createElement('div');
+    div.className='question-block';
+    div.id='qb-'+q.id;
+    let h=`<div class="question-num">Întrebarea ${idx+1} <span class="question-type-badge">${TYPE_LABEL[q.type]}</span></div><div class="question-text">${q.text}</div>`;
+    if(q.type==='abcd'){
+      const opts=shuffle(q.options.map((o,i)=>({t:o,ok:i===q.correct})));
+      h+=`<div class="options">`;
+      opts.forEach((o,i)=>{h+=`<div class="option" data-qid="${q.id}" data-ok="${o.ok}" onclick="selOpt(this)"><div class="option-letter">${LABELS[i]}</div><div class="option-text">${o.t}</div></div>`;});
+      h+=`</div>`;
+    }
+    if(q.type==='fill'){h+=`<input class="fill-input" id="fi-${q.id}" type="text" placeholder="Scrie răspunsul..." oninput="onFill('${q.id}',this.value)">`;}
+    if(q.type==='tf'){h+=`<div class="tf-options"><button class="tf-btn" data-qid="${q.id}" data-val="adevarat" onclick="selTF(this)">✓ Adevărat</button><button class="tf-btn" data-qid="${q.id}" data-val="fals" onclick="selTF(this)">✗ Fals</button></div>`;}
+    if(q.type==='unit'){
+      unitState[q.id]={sel:null,matches:{}};
+      const rightShuf=shuffle([...q.pairs]);
+      h+=`
+        <div class="unit-hint">Click pe un termen, apoi pe descrierea potrivită. Click pe o pereche bifată pentru a o anula.</div>
+        <div class="unit-container" id="uc-${q.id}">
+          <div class="unit-col">
+            <div class="unit-col-label">Termen</div>
+            <div class="unit-items" id="ul-${q.id}">`;
+      q.pairs.forEach((p,i)=>{h+=`<div class="unit-item" data-qid="${q.id}" data-side="left" data-idx="${i}" onclick="selUnit(this)">${p.left}</div>`;});
+      h+=`    </div>
+          </div>
+          <div class="unit-arrows-col" id="ua-${q.id}">
+            <div class="unit-col-label">&nbsp;</div>
+            <div id="arrows-${q.id}" class="arrows-wrap"></div>
+          </div>
+          <div class="unit-col">
+            <div class="unit-col-label">Descriere</div>
+            <div class="unit-items" id="ur-${q.id}">`;
+      rightShuf.forEach(p=>{const i=q.pairs.findIndex(op=>op.right===p.right);h+=`<div class="unit-item" data-qid="${q.id}" data-side="right" data-idx="${i}" onclick="selUnit(this)">${p.right}</div>`;});
+      h+=`    </div>
+          </div>
+        </div>`;
+    }
+    div.innerHTML=h;
+    c.appendChild(div);
+  });
+}
+
+function updProgress(){
+  const n=Object.keys(raspunsuri).length;
+  document.getElementById('progressFill').style.width=(n/10*100)+'%';
+  document.getElementById('progressLabel').textContent=`${n} / 10 răspunse`;
+}
+
+function selOpt(el){
+  const qid=el.dataset.qid;
+  document.querySelectorAll(`[data-qid="${qid}"].option`).forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  raspunsuri[qid]=el.dataset.ok==='true';
+  updProgress();
+}
+
+function selTF(el){
+  const qid=el.dataset.qid;
+  document.querySelectorAll(`[data-qid="${qid}"].tf-btn`).forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  const q=INTREBARI.find(q=>q.id===qid);
+  raspunsuri[qid]=el.dataset.val===q.correct;
+  updProgress();
+}
+
+function onFill(qid,val){
+  const q=INTREBARI.find(q=>q.id===qid);
+  raspunsuri[qid]=val.trim().toLowerCase()===q.correct.toLowerCase();
+  updProgress();
+}
+
+function selUnit(el){
+  const qid=el.dataset.qid,side=el.dataset.side,idx=parseInt(el.dataset.idx);
+  const st=unitState[qid];
+
+  // Click pe un item deja matched — debifează
+  if(el.classList.contains('matched')){
+    // Gaseste perechea
+    let leftIdx=null,rightIdx=null;
+    if(side==='left'){ leftIdx=idx; rightIdx=st.matches[idx]; }
+    else { rightIdx=idx; leftIdx=parseInt(Object.keys(st.matches).find(k=>st.matches[k]===idx)); }
+    // Sterge match
+    delete st.matches[leftIdx];
+    // Reset clase
+    const leftEl=document.querySelector(`[data-qid="${qid}"][data-side="left"][data-idx="${leftIdx}"]`);
+    const rightEl=document.querySelector(`[data-qid="${qid}"][data-side="right"][data-idx="${rightIdx}"]`);
+    if(leftEl){leftEl.classList.remove('matched');}
+    if(rightEl){rightEl.classList.remove('matched');}
+    // Sterge sageata
+    const arrow=document.getElementById(`arrow-${qid}-${leftIdx}`);
+    if(arrow)arrow.remove();
+    // Recalculeaza raspuns
+    const q=INTREBARI.find(q=>q.id===qid);
+    if(Object.keys(st.matches).length===q.pairs.length){
+      raspunsuri[qid]=Object.keys(st.matches).every(k=>parseInt(k)===st.matches[k]);
+    } else {
+      delete raspunsuri[qid];
+    }
+    updProgress();
+    return;
+  }
+
+  if(side==='left'){
+    document.querySelectorAll(`[data-qid="${qid}"][data-side="left"]`).forEach(i=>i.classList.remove('selected-left'));
+    el.classList.add('selected-left');
+    st.sel=idx;
+  } else {
+    if(st.sel===null)return;
+    const leftIdx=st.sel;
+    const rightIdx=idx;
+    st.matches[leftIdx]=rightIdx;
+
+    const leftEl=document.querySelector(`[data-qid="${qid}"][data-side="left"][data-idx="${leftIdx}"]`);
+    leftEl.classList.remove('selected-left');
+    leftEl.classList.add('matched');
+    el.classList.add('matched');
+    st.sel=null;
+
+    // Deseneaza sageata
+    drawArrow(qid, leftIdx, rightIdx, leftEl, el);
+
+    const q=INTREBARI.find(q=>q.id===qid);
+    if(Object.keys(st.matches).length===q.pairs.length){
+      raspunsuri[qid]=Object.keys(st.matches).every(k=>parseInt(k)===st.matches[k]);
+      updProgress();
+    }
+  }
+}
+
+function drawArrow(qid, leftIdx, rightIdx, leftEl, rightEl){
+  // Creaza elementul SVG
+  const container = document.getElementById('uc-'+qid);
+  const arrowsWrap = document.getElementById('arrows-'+qid);
+
+  // Pozitii relative la container
+  const cRect = arrowsWrap.getBoundingClientRect();
+  const lRect = leftEl.getBoundingClientRect();
+  const rRect = rightEl.getBoundingClientRect();
+
+  const lY = lRect.top + lRect.height/2 - cRect.top;
+  const rY = rRect.top + rRect.height/2 - cRect.top;
+
+  const arrowH = Math.max(arrowsWrap.offsetHeight, 10);
+
+  // Sterge sageata veche daca exista
+  const old = document.getElementById(`arrow-${qid}-${leftIdx}`);
+  if(old) old.remove();
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('id',`arrow-${qid}-${leftIdx}`);
+  svg.style.cssText=`position:absolute;top:0;left:0;width:100%;height:${arrowsWrap.scrollHeight}px;overflow:visible;pointer-events:none`;
+
+  const colors=['#ffaa00','#00c6ff','#ff6b9d','#a78bfa'];
+  const color=colors[leftIdx % colors.length];
+
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  const w=arrowsWrap.offsetWidth||40;
+  const x1=4, x2=w-4;
+  const y1=lY, y2=rY;
+  const cx=(x1+x2)/2;
+  path.setAttribute('d',`M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}`);
+  path.setAttribute('stroke',color);
+  path.setAttribute('stroke-width','2');
+  path.setAttribute('fill','none');
+  path.setAttribute('stroke-dasharray','5,3');
+
+  // Varful sagetii
+  const arrow=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+  arrow.setAttribute('points',`${x2},${y2} ${x2-6},${y2-4} ${x2-6},${y2+4}`);
+  arrow.setAttribute('fill',color);
+
+  svg.appendChild(path);
+  svg.appendChild(arrow);
+  arrowsWrap.style.position='relative';
+  arrowsWrap.appendChild(svg);
+}
+
+// calculeaza scorul si afiseaza rezultatul
+function submitQuiz(){
+  INTREBARI.filter(q=>q.type==='fill').forEach(q=>{
+    if(raspunsuri[q.id]===undefined){
+      const v=(document.getElementById('fi-'+q.id)?.value||'').trim().toLowerCase();
+      raspunsuri[q.id]=v===q.correct.toLowerCase();
+    }
+  });
+
+  let scor=0,greseli=[];
+  INTREBARI.forEach(q=>{
+    if(raspunsuri[q.id]===true)scor++;
+    else greseli.push(q);
+  });
+
+  const trecut=scor>=7;
+  if(trecut)window.salveazaQuiz();
+  salveazaIstoric(scor);
+
+  let html=`<div class="popup-score"><div class="popup-score-num ${trecut?'pass':'fail'}">${scor}/10</div><div class="popup-score-label">puncte obținute</div><div class="popup-result-text ${trecut?'pass':'fail'}">${trecut?'🎉 Felicitări, ai trecut!':'😕 Nu ai trecut. Mai încearcă!'}</div></div><div class="popup-divider"></div>`;
+
+  if(greseli.length===0){
+    html+=`<div class="popup-no-greseli">✅ Perfect! Ai răspuns corect la toate.</div>`;
+  }else{
+    html+=`<div class="popup-greseli-title">📋 Întrebările greșite</div>`;
+    greseli.forEach(g=>{
+      let ct='';
+      if(g.type==='abcd')ct=g.options[g.correct];
+      else if(g.type==='fill')ct=g.correct;
+      else if(g.type==='tf')ct=g.correct==='adevarat'?'Adevărat':'Fals';
+      else ct=g.pairs.map(p=>`${p.left} → ${p.right}`).join(' | ');
+      html+=`<div class="greseala-item"><div class="greseala-q">${g.text.replace(/<[^>]*>/g,'')}</div><div class="greseala-corect">Răspuns corect: <span>${ct}</span></div><div class="greseala-explicatie">${g.explicatie}</div></div>`;
+    });
+  }
+
+  html+=`<div class="popup-btns"><button class="popup-btn popup-btn-secondary" onclick="location.reload()">🔄 Încearcă din nou</button><button class="popup-btn popup-btn-primary" onclick="location.href='quiz.html'">← Înapoi la Quiz</button></div>`;
+  document.getElementById('popupContent').innerHTML=html;
+  document.getElementById('popupOverlay').classList.remove('hidden');
+}
+
+function _histKey(){return 'qhist_medicina_'+(window._cu?window._cu.uid:'guest');}
+// salveaza scorul in localStorage
+function salveazaIstoric(scor){
+  var h=JSON.parse(localStorage.getItem(_histKey())||'[]');
+  var now=new Date();
+  h.unshift({scor:scor,data:now.toLocaleDateString('ro-RO'),ora:now.toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem(_histKey(),JSON.stringify(h.slice(0,30)));
+}
+function deschideIstoric(){
+  var h=JSON.parse(localStorage.getItem(_histKey())||'[]');
+  var list=document.getElementById('histList');
+  if(!h.length){list.innerHTML='<div class="hist-empty">Nicio incercare inca.</div>';}
+  else{list.innerHTML=h.map(function(e){return '<div class="hist-item '+(e.scor>=7?'pass':'fail')+'"><div><div class="hist-score">'+e.scor+'/10</div><span class="hist-badge '+(e.scor>=7?'pass':'fail')+'">'+(e.scor>=7?'TRECUT':'PICAT')+'</span></div><div class="hist-meta">'+e.data+'<br>'+e.ora+'</div></div>';}).join('');}
+  document.getElementById('histOverlay').classList.remove('hidden');
+}
+function inchideIstoric(){document.getElementById('histOverlay').classList.add('hidden');}
+
+renderQuiz();
+
+const cw=document.querySelector('.content-wrap');
+let isDown=false,startY,st2;
+cw.addEventListener('mousedown',e=>{isDown=true;cw.style.cursor='grabbing';startY=e.pageY-cw.offsetTop;st2=cw.scrollTop;});
+document.addEventListener('mouseup',()=>{isDown=false;cw.style.cursor='default';});
+document.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();cw.scrollTop=st2-(e.pageY-cw.offsetTop-startY)*1.5;});
+</script>
+<script>
+// ===== MENIU HAMBURGER =====
+function toggleMobileMenu(){
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#hamburger') && !e.target.closest('#mobileMenu')){
+    var h=document.getElementById('hamburger'), m=document.getElementById('mobileMenu');
+    if(h) h.classList.remove('open');
+    if(m) m.classList.remove('open');
+  }
+});
+document.querySelectorAll('#mobileMenu a').forEach(function(a){
+  a.addEventListener('click',function(){
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileMenu').classList.remove('open');
+  });
+});
+window.addEventListener('resize',function(){
+  if(window.innerWidth>600){
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

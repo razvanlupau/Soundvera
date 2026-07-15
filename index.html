@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+
+<style>
+html { overflow-x:hidden; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        color: white;
+        overflow: hidden;
+        background: #0f2d4a;
+        height: 100vh;
+        width: 100%;
+    }
+
+    /* fundal animat */
+    .wave {
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        background: radial-gradient(circle at 20% 20%, #2d6494 0%, #0f2d4a 65%);
+        animation: moveWave 12s infinite linear;
+        opacity: 0.75;
+        z-index: 0;
+    }
+
+    @keyframes moveWave {
+        0% { transform: translate(0,0) scale(1); }
+        50% { transform: translate(60px, 40px) scale(1.05); }
+        100% { transform: translate(0,0) scale(1); }
+    }
+
+    /* bule */
+    .bubble {
+        position: fixed;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.25), rgba(0, 198, 255, 0.05));
+        border: 1px solid rgba(0, 198, 255, 0.25);
+        animation: floatUp linear infinite;
+        z-index: 1;
+    }
+
+    @keyframes floatUp {
+        0%   { transform: translateY(0) scale(1);    opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 0.6; }
+        100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+    }
+
+    /* marime si viteza diferita per bula */
+    .bubble:nth-child(1) { width: 18px; height: 18px; left: 5%;   bottom: -20px; animation-duration: 8s;  animation-delay: 0s; }
+    .bubble:nth-child(2) { width: 10px; height: 10px; left: 12%;  bottom: -20px; animation-duration: 6s;  animation-delay: 2s; }
+    .bubble:nth-child(3) { width: 22px; height: 22px; left: 20%;  bottom: -20px; animation-duration: 10s; animation-delay: 1s; }
+    .bubble:nth-child(4) { width: 14px; height: 14px; right: 8%;  bottom: -20px; animation-duration: 7s;  animation-delay: 3s; }
+    .bubble:nth-child(5) { width: 20px; height: 20px; right: 18%; bottom: -20px; animation-duration: 9s;  animation-delay: 0.5s; }
+    .bubble:nth-child(6) { width: 10px; height: 10px; right: 5%;  bottom: -20px; animation-duration: 5s;  animation-delay: 4s; }
+
+    /* note muzicale */
+    .note {
+        position: fixed;
+        font-size: 28px;
+        animation: floatNote linear infinite;
+        z-index: 1;
+        opacity: 0;
+        color: rgba(0, 198, 255, 0.7);
+        user-select: none;
+    }
+
+    @keyframes floatNote {
+        0%   { transform: translateY(0) rotate(0deg) scale(0.8);   opacity: 0; }
+        10%  { opacity: 0.8; }
+        50%  { transform: translateY(-40vh) rotate(15deg) scale(1); opacity: 0.6; }
+        90%  { opacity: 0.2; }
+        100% { transform: translateY(-90vh) rotate(-10deg) scale(0.9); opacity: 0; }
+    }
+
+    .note:nth-child(7)  { left: 7%;   bottom: 10%; animation-duration: 9s;  animation-delay: 0s;   font-size: 24px; }
+    .note:nth-child(8)  { left: 18%;  bottom: 20%; animation-duration: 12s; animation-delay: 2s;   font-size: 32px; }
+    .note:nth-child(9)  { left: 28%;  bottom: 5%;  animation-duration: 8s;  animation-delay: 4s;   font-size: 20px; }
+    .note:nth-child(10) { right: 7%;  bottom: 15%; animation-duration: 10s; animation-delay: 1s;   font-size: 28px; }
+    .note:nth-child(11) { right: 20%; bottom: 25%; animation-duration: 11s; animation-delay: 3s;   font-size: 22px; }
+    .note:nth-child(12) { right: 30%; bottom: 8%;  animation-duration: 7s;  animation-delay: 5s;   font-size: 30px; }
+    .note:nth-child(13) { left: 40%;  bottom: 3%;  animation-duration: 13s; animation-delay: 1.5s; font-size: 18px; }
+
+    /* logo */
+    .logo {
+        position: absolute;
+        top: 5px;
+        left: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .logo img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        margin: -15px -10px -15px -10px;
+    }
+
+    .logo span {
+        color: #0099cc;
+        margin-top: 10px; 
+    }
+
+    /* container principal */
+    .container {
+        position: relative;
+        z-index: 5;
+        text-align: center;
+        top: 28vh;
+        opacity: 0;
+        animation: fadeIn 2s ease forwards;
+    }
+
+    h1 {
+        font-size: 60px;
+        margin: 0;
+        opacity: 0;
+        animation: fadeIn 2s ease forwards;
+        animation-delay: 0.3s;
+        text-shadow: 0 0 30px rgba(0, 198, 255, 0.3);
+    }
+
+    .slogan {
+        font-size: 20px;
+        margin-top: 15px;
+        opacity: 0;
+        animation: fadeIn 2s ease forwards;
+        animation-delay: 1.2s;
+        color: rgba(255,255,255,0.75);
+    }
+
+    /* unda sonora */
+    .soundwave {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        margin: 25px auto 0;
+        height: 50px;
+        opacity: 0;
+        animation: fadeIn 2s ease forwards;
+        animation-delay: 1.5s;
+    }
+
+    .soundwave span {
+        display: inline-block;
+        width: 4px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, #00c6ff, #0099cc);
+        animation: wave-bar 1.2s ease-in-out infinite;
+    }
+
+    .soundwave span:nth-child(1)  { height: 15px; animation-delay: 0.0s; }
+    .soundwave span:nth-child(2)  { height: 30px; animation-delay: 0.1s; }
+    .soundwave span:nth-child(3)  { height: 45px; animation-delay: 0.2s; }
+    .soundwave span:nth-child(4)  { height: 25px; animation-delay: 0.3s; }
+    .soundwave span:nth-child(5)  { height: 40px; animation-delay: 0.4s; }
+    .soundwave span:nth-child(6)  { height: 50px; animation-delay: 0.5s; }
+    .soundwave span:nth-child(7)  { height: 35px; animation-delay: 0.6s; }
+    .soundwave span:nth-child(8)  { height: 50px; animation-delay: 0.5s; }
+    .soundwave span:nth-child(9)  { height: 40px; animation-delay: 0.4s; }
+    .soundwave span:nth-child(10) { height: 25px; animation-delay: 0.3s; }
+    .soundwave span:nth-child(11) { height: 45px; animation-delay: 0.2s; }
+    .soundwave span:nth-child(12) { height: 30px; animation-delay: 0.1s; }
+    .soundwave span:nth-child(13) { height: 15px; animation-delay: 0.0s; }
+
+    @keyframes wave-bar {
+        0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+        50%       { transform: scaleY(1);   opacity: 1; }
+    }
+
+    /* butoane */
+    .buttons {
+        margin-top: 30px;
+        opacity: 0;
+        animation: fadeIn 2s ease forwards;
+        animation-delay: 2s;
+    }
+
+    button {
+        padding: 14px 35px;
+        margin: 10px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    /* login - transparent */
+    .login {
+        background: transparent;
+        color: white;
+        border: 2px solid rgba(255,255,255,0.6);
+        backdrop-filter: blur(5px);
+    }
+
+    .login:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: white;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    /* register - gradient albastru */
+    .register {
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 198, 255, 0.4);
+    }
+
+    .register:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 30px rgba(0, 198, 255, 0.7);
+        background: linear-gradient(135deg, #33d4ff, #0088ff);
+    }
+    
+    /* animatie fade in */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* responsive telefon */
+
+
+    @media (max-width: 600px) {
+        .logo { top: 12px !important; }
+        .logo img { width: 60px !important; height: 60px !important; margin: -8px -8px -8px -8px !important; }
+        .logo span { font-size: 14px !important; margin-top: 4px !important; }
+        h1 { font-size: 36px !important; }
+        .slogan { font-size: 14px !important; padding: 0 20px; }
+        .container { top: 20vh !important; }
+        button { padding: 12px 24px !important; font-size: 14px !important; margin: 6px !important; }
+    }
+
+
+    /* pe ecrane foarte scunde (landscape) lasam continutul sa se deruleze,
+       altfel butoanele ies sub marginea de jos */
+    @media (max-height: 520px) {
+        body { overflow-y: auto; }
+        .container { top: 12vh !important; padding-bottom: 30px; }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- fundal -->
+<div class="wave"></div>
+
+<!-- bule -->
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+
+<!-- note muzicale -->
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+<div class="note">♬</div>
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+
+<!-- logo -->
+<div class="logo">
+    <img src="assets/images/Logo.png" alt="logo">
+    <span>Soundvera</span>
+</div>
+
+<!-- continut principal -->
+<div class="container">
+    <h1>Soundvera</h1>
+    <div class="slogan">Hear the sound, See the science</div>
+
+    <!-- unda sonora -->
+    <div class="soundwave">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+    </div>
+
+    <!-- butoane login si register -->
+    <div class="buttons">
+        <button class="login" onclick="window.location.href='login.html'">Login</button>
+        <button class="register" onclick="window.location.href='register.html'">Register</button>
+    </div>
+</div>
+
+</body>
+</html>

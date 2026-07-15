@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundvera - Home</title>
+<link rel="icon" type="image/png" href="assets/images/Logo.png">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+    background: #0f2d4a;
+    height: 100vh;
+    width: 100vw;
+}
+
+.wave {
+    position: absolute;
+    width: 200%; height: 200%;
+    top: -50%; left: -50%;
+    background: radial-gradient(circle at 20% 20%, #2d6494 0%, #0f2d4a 65%);
+    animation: moveWave 12s infinite linear;
+    opacity: 0.75;
+    z-index: 0;
+}
+
+@keyframes moveWave {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(60px, 40px) scale(1.05); }
+    100% { transform: translate(0,0) scale(1); }
+}
+
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.25), rgba(0,198,255,0.05));
+    border: 1px solid rgba(0,198,255,0.25);
+    animation: floatUp linear infinite;
+    z-index: 1;
+}
+
+@keyframes floatUp {
+    0%   { transform: translateY(0) scale(1); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.6; }
+    100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+}
+
+.bubble:nth-child(1) { width: 18px; height: 18px; left: 5%; bottom: -20px; animation-duration: 8s; }
+.bubble:nth-child(2) { width: 10px; height: 10px; left: 12%; bottom: -20px; animation-duration: 6s; }
+.bubble:nth-child(3) { width: 22px; height: 22px; left: 20%; bottom: -20px; animation-duration: 10s; }
+.bubble:nth-child(4) { width: 14px; height: 14px; right: 8%; bottom: -20px; animation-duration: 7s; }
+.bubble:nth-child(5) { width: 20px; height: 20px; right: 18%; bottom: -20px; animation-duration: 9s; }
+.bubble:nth-child(6) { width: 10px; height: 10px; right: 5%; bottom: -20px; animation-duration: 5s; }
+
+.note {
+    position: absolute;
+    font-size: 28px;
+    animation: floatNote linear infinite;
+    z-index: 1;
+    opacity: 0;
+    color: rgba(0,198,255,0.7);
+    user-select: none;
+}
+
+@keyframes floatNote {
+    0%   { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+    10%  { opacity: 0.8; }
+    50%  { transform: translateY(-40vh) rotate(15deg) scale(1); opacity: 0.6; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(-90vh) rotate(-10deg) scale(0.9); opacity: 0; }
+}
+
+.note:nth-child(7)  { left: 7%;   bottom: 10%; animation-duration: 9s;  animation-delay: 0s;   font-size: 24px; }
+.note:nth-child(8)  { left: 18%;  bottom: 20%; animation-duration: 12s; animation-delay: 2s;   font-size: 32px; }
+.note:nth-child(9)  { left: 28%;  bottom: 5%;  animation-duration: 8s;  animation-delay: 4s;   font-size: 20px; }
+.note:nth-child(10) { right: 7%;  bottom: 15%; animation-duration: 10s; animation-delay: 1s;   font-size: 28px; }
+.note:nth-child(11) { right: 20%; bottom: 25%; animation-duration: 11s; animation-delay: 3s;   font-size: 22px; }
+.note:nth-child(12) { right: 30%; bottom: 8%;  animation-duration: 7s;  animation-delay: 5s;   font-size: 30px; }
+.note:nth-child(13) { left: 40%;  bottom: 3%;  animation-duration: 13s; animation-delay: 1.5s; font-size: 18px; }
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 105px;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+    z-index: 10;
+    border-bottom: 1px solid rgba(0,198,255,0.2);
+}
+
+.logo {
+    position: absolute;
+    top: 5px; left: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logo img {
+    width: 120px; height: 120px;
+    object-fit: contain;
+    margin: -15px -10px -15px -10px;
+}
+
+.logo span { color: #0099cc; margin-top: 10px; }
+
+.nav-links {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.75);
+    padding: 8px 16px;
+    border-radius: 30px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover { color: white; background: rgba(0,198,255,0.15); }
+.nav-links .active { color: #00c6ff; background: rgba(0,198,255,0.15); }
+
+.dropdown { position: relative; }
+
+.dropdown .cont {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,198,255,0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown .cont:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,198,255,0.5); }
+
+.nav-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.4);
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.nav-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 110%; right: 0;
+    background: rgba(15,45,74,0.97);
+    border: 1.5px solid rgba(0,198,255,0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    min-width: 210px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.dropdown-menu.active { display: block; }
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.dropdown-avatar {
+    width: 35px; height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.dropdown-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+#dropUsername { font-size: 14px; font-weight: bold; color: white; }
+
+.dropdown-menu a {
+    display: block;
+    padding: 13px 18px;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+    background: none;
+}
+
+.dropdown-menu a:hover { background: rgba(0,198,255,0.15); color: white; }
+.dropdown-menu a.logout { color: #ff6b6b; border-top: 1px solid rgba(255,255,255,0.08); }
+.dropdown-menu a.logout:hover { background: rgba(255,80,80,0.15); }
+
+/* ===== CONTINUT HOME ===== */
+.container {
+    position: fixed;
+    top: 105px; left: 0;
+    width: 100vw;
+    height: calc(100vh - 105px);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero {
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
+    padding: 0 20px;
+    animation: fadeIn 1s ease forwards;
+}
+
+.hero h1 {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 0 0 30px rgba(0,198,255,0.4);
+    line-height: 1.2;
+}
+
+.hero h1 span { color: #00c6ff; }
+
+.hero p {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    margin: 0 auto 20px;
+    max-width: 550px;
+}
+
+/* ===== DOMENII ===== */
+.domenii {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 660px;
+    margin: 0 auto 24px;
+}
+
+.domeniu {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(0,198,255,0.2);
+    border-radius: 30px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+/* ===== UNDA SONORA ===== */
+.soundwave {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 0 auto 25px;
+    height: 40px;
+}
+
+.soundwave span {
+    display: inline-block;
+    width: 4px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #00c6ff, #0099cc);
+    animation: wave-bar 1.2s ease-in-out infinite;
+}
+
+.soundwave span:nth-child(1)  { height: 12px; animation-delay: 0.0s; }
+.soundwave span:nth-child(2)  { height: 24px; animation-delay: 0.1s; }
+.soundwave span:nth-child(3)  { height: 36px; animation-delay: 0.2s; }
+.soundwave span:nth-child(4)  { height: 20px; animation-delay: 0.3s; }
+.soundwave span:nth-child(5)  { height: 32px; animation-delay: 0.4s; }
+.soundwave span:nth-child(6)  { height: 40px; animation-delay: 0.5s; }
+.soundwave span:nth-child(7)  { height: 28px; animation-delay: 0.6s; }
+.soundwave span:nth-child(8)  { height: 40px; animation-delay: 0.5s; }
+.soundwave span:nth-child(9)  { height: 32px; animation-delay: 0.4s; }
+.soundwave span:nth-child(10) { height: 20px; animation-delay: 0.3s; }
+.soundwave span:nth-child(11) { height: 36px; animation-delay: 0.2s; }
+.soundwave span:nth-child(12) { height: 24px; animation-delay: 0.1s; }
+.soundwave span:nth-child(13) { height: 12px; animation-delay: 0.0s; }
+
+@keyframes wave-bar {
+    0%, 100% { transform: scaleY(0.4); opacity: 0.5; }
+    50%       { transform: scaleY(1);   opacity: 1; }
+}
+
+/* ===== BUTON ===== */
+.btn-afla {
+    padding: 14px 40px;
+    border-radius: 30px;
+    border: none;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,198,255,0.4);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-afla:hover { transform: scale(1.05); box-shadow: 0 6px 30px rgba(0,198,255,0.7); }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* streak zilnic */
+.streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,140,0,0.12);
+    border: 1px solid rgba(255,140,0,0.35);
+    border-radius: 30px;
+    padding: 8px 18px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: white;
+    animation: fadeIn 1s ease forwards;
+}
+.streak-fire { font-size: 22px; }
+.streak-num { font-size: 20px; font-weight: bold; color: #ff8c00; }
+.streak-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+
+/* salut personalizat */
+.welcome-msg {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 8px;
+}
+.welcome-msg span { color: #00c6ff; font-weight: bold; }
+
+/* citat zilnic */
+.daily-quote {
+    max-width: 500px;
+    margin: 10px auto 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+
+    @media (max-width: 480px) {
+        /* logo */
+        .logo img { width: 70px !important; height: 70px !important; }
+        .logo { font-size: 15px !important; }
+        .logo span { margin-top: 5px !important; }
+
+        /* navbar */
+        .navbar { padding: 0 10px !important; height: 80px !important; }
+        .nav-links { gap: 4px !important; }
+        .nav-links a { padding: 6px 8px !important; font-size: 11px !important; }
+        .dropdown .cont { padding: 6px 10px !important; font-size: 11px !important; }
+
+        /* content */
+        .content-wrap { top: 80px !important; height: calc(100vh - 80px) !important; }
+        .page { padding: 20px 14px 60px !important; }
+
+        /* titluri */
+        h1, .page-title { font-size: 22px !important; }
+        h2 { font-size: 18px !important; }
+
+        body { overflow-y: auto; }
+    }
+
+    @media (max-width: 480px) {
+        .hero h1 { font-size: 26px !important; }
+        .hero p { font-size: 13px !important; padding: 0 10px; }
+        .domenii { gap: 6px !important; }
+        .domeniu { font-size: 11px !important; padding: 6px 10px !important; }
+        .btn-afla { padding: 10px 24px !important; font-size: 13px !important; }
+        .welcome-msg { font-size: 13px !important; }
+    }
+
+
+    /* hamburger menu */
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 8px;
+        margin-left: auto;
+        z-index: 9999;
+    }
+
+    .hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: white;
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* meniu mobil */
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: rgba(10,25,45,0.98);
+        border-bottom: 1px solid rgba(0,198,255,0.2);
+        z-index: 9999;
+        flex-direction: column;
+        padding: 10px 0;
+        backdrop-filter: blur(10px);
+        overflow-y: auto;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+        padding: 14px 24px;
+        color: rgba(255,255,255,0.85);
+        text-decoration: none;
+        font-size: 15px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        transition: 0.2s;
+    }
+
+    .mobile-menu a:hover { background: rgba(0,198,255,0.1); color: white; }
+    .mobile-menu a.logout-mob { color: #ff6b6b; }
+
+    @media (max-width: 600px) {
+        .nav-links { display: none !important; }
+        .hamburger { display: flex !important; }
+        .navbar { height: 80px !important; padding: 0 16px !important; }
+        .content-wrap { top: 80px !important; }
+        .logo img { width: 60px !important; height: 60px !important; margin: -8px -8px -8px -8px !important; }
+        .logo { font-size: 14px !important; top: 12px !important; }
+        .logo span { margin-top: 4px !important; }
+    }
+
+</style>
+</head>
+
+<body>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQe0VLbBbRi7l8AkDxx30jL0DfnJSlpeM",
+        authDomain: "soundvera-66452.firebaseapp.com",
+        projectId: "soundvera-66452",
+        storageBucket: "soundvera-66452.firebasestorage.app",
+        messagingSenderId: "255538443530",
+        appId: "1:255538443530:web:018577a62aafddf45776f3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) { window.location.href = 'index.html'; return; }
+
+        const savedPhoto = localStorage.getItem('avatar_' + user.uid);
+        const letter = (user.displayName || '?')[0].toUpperCase();
+
+        const navAvatar = document.getElementById('navAvatar');
+        const dropAvatar = document.getElementById('dropAvatar');
+
+        if (savedPhoto) {
+            navAvatar.innerHTML = `<img src="${savedPhoto}" alt="avatar">`;
+            dropAvatar.innerHTML = `<img src="${savedPhoto}" alt="avatar">`;
+        } else {
+            navAvatar.textContent = letter;
+            dropAvatar.textContent = letter;
+        }
+
+        document.getElementById('dropUsername').textContent = user.displayName || 'N/A';
+        var wn = document.getElementById('welcomeName');
+        if(wn) wn.textContent = (user.displayName || 'utilizator').split(' ')[0];
+        localStorage.setItem('soundvera_uid', user.uid);
+    });
+
+    document.getElementById('contBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('dropdownMenu').classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dropdown')) {
+            document.getElementById('dropdownMenu').classList.remove('active');
+        }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await signOut(auth);
+        window.location.href = 'index.html';
+    });
+
+    // logout din meniu mobil
+    const logoutBtnMob = document.getElementById('logoutBtnMob');
+    if(logoutBtnMob) logoutBtnMob.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await signOut(auth);
+        window.location.href = 'index.html';
+    });
+</script>
+
+<div class="wave"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+<div class="note">♬</div>
+<div class="note">♩</div>
+<div class="note">♪</div>
+<div class="note">♫</div>
+
+<nav class="navbar">
+    <a href="home.html" class="logo">
+        <img src="assets/images/Logo.png" alt="logo">
+        <span>Soundvera</span>
+    </a>
+    <div class="nav-links">
+        <a href="home.html" class="active">🏠 Home</a>
+        <a href="sunete.html">🔊 Sunete</a>
+        <a href="teorie.html">📖 Teorie</a>
+        <a href="quiz.html">🧠 Quiz</a>
+        <a href="joc.html">🎮 Joc</a>
+        <a href="contact.html">📩 Contact</a>
+        <div class="dropdown">
+            <a href="#" class="cont" id="contBtn">
+                <div class="nav-avatar" id="navAvatar">?</div>
+                Cont
+            </a>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-header">
+                    <div class="dropdown-avatar" id="dropAvatar">?</div>
+                    <span id="dropUsername">Se încarcă...</span>
+                </div>
+                <a href="cont.html">⚙️ Setări cont</a>
+                <a href="achievements.html">🏆 Achievements</a>
+                <a href="#" class="logout" id="logoutBtn">🚪 Log out</a>
+            </div>
+        </div>
+    </div>
+<!-- hamburger button -->
+<div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+</nav>
+
+<!-- meniu mobil -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="home.html">🏠 Home</a>
+    <a href="sunete.html">🔊 Sunete</a>
+    <a href="teorie.html">📖 Teorie</a>
+    <a href="quiz.html">🧠 Quiz</a>
+    <a href="joc.html">🎮 Joc</a>
+    <a href="contact.html">📩 Contact</a>
+    <a href="cont.html">⚙️ Setări cont</a>
+    <a href="achievements.html">🏆 Achievements</a>
+    <a href="#" class="logout-mob" id="logoutBtnMob">🚪 Log out</a>
+</div>
+
+
+<div class="container">
+    <div class="hero">
+
+        <!-- streak zilnic -->
+        <div class="streak-badge" id="streakBadge" style="display:none;">
+            <span class="streak-fire">🔥</span>
+            <span class="streak-num" id="streakNum">0</span>
+            <span class="streak-label">zile consecutive</span>
+        </div>
+
+        <!-- salut personalizat -->
+        <div class="welcome-msg">Bună ziua, <span id="welcomeName">...</span>! 👋</div>
+
+        <h1>Descoperă lumea <span>sunetului</span></h1>
+
+        <!-- citat zilnic -->
+        <div class="daily-quote" id="dailyQuote"></div>
+        <p>
+            Soundvera este o platformă educațională interactivă care explorează sunetul
+            din perspective multiple — de la fizică și matematică, până la psihologie,
+            medicină și muzică. Înveți prin demonstrații, experimente și quizuri.
+        </p>
+
+        <div class="domenii">
+            <div class="domeniu">💻 Informatică</div>
+            <div class="domeniu">📐 Matematică</div>           
+            <div class="domeniu">🔬 Fizică</div>
+            <div class="domeniu">⚗️ Chimie</div>
+            <div class="domeniu">🐾 Biologie</div>
+            <div class="domeniu">🏥 Medicină</div>
+            <div class="domeniu">🎵 Muzică</div>            
+            <div class="domeniu">🧠 Psihologie</div>            
+            <div class="domeniu">🌍 Geografie</div>
+            <div class="domeniu">🏗️ Arhitectură</div>
+            <div class="domeniu">🎭 Artă</div>
+            <div class="domeniu">🔭 Astronomie</div>
+        </div>
+
+        <div class="soundwave">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+        </div>
+
+        <a href="sunete.html" class="btn-afla">🔊 Află mai multe</a>
+    </div>
+</div>
+
+
+<script>
+// calculeaza streak-ul zilnic
+function updateStreak() {
+    var uid = localStorage.getItem('soundvera_uid') || 'guest';
+    var key = 'streak_' + uid;
+    var today = new Date().toDateString();
+    var data = JSON.parse(localStorage.getItem(key) || '{"count":0,"lastDate":""}');
+
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    var yesterdayStr = yesterday.toDateString();
+
+    if (data.lastDate === today) {
+        // deja intrat azi, streak ramine la fel
+    } else if (data.lastDate === yesterdayStr) {
+        // a intrat ieri, creste streak
+        data.count++;
+        data.lastDate = today;
+        localStorage.setItem(key, JSON.stringify(data));
+    } else if (data.lastDate === '') {
+        // prima vizita
+        data.count = 1;
+        data.lastDate = today;
+        localStorage.setItem(key, JSON.stringify(data));
+    } else {
+        // a sarit o zi, reset
+        data.count = 1;
+        data.lastDate = today;
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    if (data.count > 0) {
+        document.getElementById('streakNum').textContent = data.count;
+        document.getElementById('streakBadge').style.display = 'inline-flex';
+    }
+}
+
+window.addEventListener('load', updateStreak);
+</script>
+
+
+<script>
+// citate zilnice despre sunet si muzica
+var QUOTES = [
+    '"Muzica este aritmetica sunetelor, la fel cum optica este geometria luminii." — Claude Debussy',
+    '"Fara muzica, viata ar fi o greseala." — Friedrich Nietzsche',
+    '"Muzica exprima ceea ce nu poate fi spus si despre care este imposibil sa taci." — Victor Hugo',
+    '"Acolo unde cuvintele esueaza, muzica vorbeste." — Hans Christian Andersen',
+    '"Muzica da suflet universului, aripi mintii si viata tuturor." — Platon',
+    '"Sunetul este primul limbaj al omenirii." — anon',
+    '"Fiecare unda sonora poarta in ea o bucatica de infinit." — anon',
+    '"A asculta inseamna a intelege lumea." — anon',
+    '"Sunetul nu are frontiere. Nici cunoasterea." — anon',
+    '"Frecventa potrivita poate schimba totul." — anon',
+    '"In orice vibratie se ascunde o poveste." — anon',
+    '"Muzica este scurtatura spre emotie." — anon',
+    '"Vibrezi, deci existi." — anon',
+    '"Sunetul este miscare. Miscarea este viata." — anon',
+    '"Muzica este stiinta pusa in sunet." — anon',
+];
+var dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+document.getElementById('dailyQuote').textContent = QUOTES[dayOfYear % QUOTES.length];
+</script>
+
+
+<script>
+// hamburger menu
+function toggleMobileMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// inchide meniu la click afara
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#hamburger') && !e.target.closest('#mobileMenu')) {
+        document.getElementById('hamburger').classList.remove('open');
+        document.getElementById('mobileMenu').classList.remove('open');
+    }
+});
+</script>
+
+</body>
+</html>
