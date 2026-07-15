@@ -1,7 +1,7 @@
 # Soundvera
 *Hear the sound, See the science*
 
-Soundvera e o platformă web educațională despre sunet. Ideea de la care am pornit e că sunetul nu ține de o singură materie — aceeași undă sonoră e în același timp fizică, matematică, biologie, muzică și încă multe altele. Am vrut să arăt asta printr-un singur proiect care leagă 12 domenii diferite, toate pornind de la sunet.
+Soundvera e o platformă educațională despre sunet. Ideea de la care am pornit e că sunetul nu ține de o singură materie — aceeași undă sonoră e în același timp fizică, matematică, biologie, muzică și încă multe altele. Am vrut să arăt asta printr-un singur proiect care leagă 12 domenii diferite, toate pornind de la sunet.
 
 Am ales tema pentru că eu cânt la mai multe instrumente (chitară, fluier, caval) și mi-am dat seama de-a lungul timpului că sunetul pe care îl produc e, de fapt, și fizică, și matematică, și acustică — depinde doar din ce parte îl privești.
 
