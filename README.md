@@ -8,7 +8,6 @@ Am ales tema pentru că eu cânt la mai multe instrumente (chitară, fluier, cav
 
 **Autor:** Lupau Razvan, XI, Colegiul National "Samuil Vulcan", Beius
 **Coordonator:** Buran Claudia
-**Link aplicație:** [pune linkul aici]
 
 ## Ce poți face pe site
 
