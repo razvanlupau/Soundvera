@@ -12,12 +12,12 @@ Soundvera e o platformă educațională despre sunet. Ideea de la care am pornit
 - Progresul tău se salvează, așa că poți continua de unde ai rămas.
 
 ## Cum se folosește
-Platforma e găzduită online, nu trebuie instalat nimic. Deschizi linkul, îți faci cont din pagina *Register* și gata.
+Platforma e găzduită online pe Firebase Hosting, nu trebuie instalat nimic. Deschizi linkul, îți faci cont din pagina *Register* și gata.
 
 ## Cum e făcută
 Proiectul e scris în HTML, CSS și JavaScript, fără niciun framework. L-am construit pe parcurs, în mai multe versiuni, adăugând treptat funcționalități noi. Nu are server propriu — paginile vorbesc direct cu Firebase (pentru conturi și baza de date) și cu EmailJS (pentru formularul de contact). Am ales varianta asta pentru că e simplă, ușor de găzduit și se potrivește cu ce voiam: o platformă pe care oricine o poate deschide direct din browser.
 
-Datele se țin în Cloud Firestore: profilul fiecărui utilizator și lista quiz-urilor completate, legate de contul lui.
+Datele se țin în Cloud Firestore: profilul fiecărui utilizator și lista quiz-urilor completate, legate de contul lui. Accesul e protejat prin reguli de securitate, astfel încât fiecare utilizator poate modifica doar propriile date.
 
 Toate paginile se adaptează la telefon și tabletă — pe ecran mic meniul devine hamburger, iar grila de note din Melody Studio se poate derula lateral ca să rămână utilizabilă cu degetul.
 
@@ -25,6 +25,7 @@ Toate paginile se adaptează la telefon și tabletă — pe ecran mic meniul dev
 - **HTML / CSS / JavaScript**, fără framework — ca proiectul să fie ușor și să poată fi citit cap-coadă.
 - **Firebase Authentication** pentru conturi (inclusiv login cu Google), ca să nu scriu un sistem de autentificare de la zero.
 - **Cloud Firestore** pentru salvarea progresului.
+- **Firebase Hosting** pentru găzduirea platformei.
 - **Web Audio API** pentru Melody Studio. Sunetul nu vine dintr-o bibliotecă gata făcută — l-am construit direct, cu oscilatoare, pornind de la frecvențele reale ale notelor.
 - **Canvas** pentru a desena certificatul și a-l salva ca imagine.
 - **EmailJS** pentru a trimite mesajele din formularul de contact fără un server propriu.
